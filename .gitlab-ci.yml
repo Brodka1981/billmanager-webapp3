@@ -18,7 +18,10 @@ before_script:
 build:
   stage: build
   script:
-    - echo "Building image: $DOCKER_IMAGE:$DOCKER_TAG"
+    - echo "Docker image:"
+    - echo $DOCKER_IMAGE
+    - echo "Docker tag:"
+    - echo $DOCKER_TAG
     - docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
   only:
     - master
