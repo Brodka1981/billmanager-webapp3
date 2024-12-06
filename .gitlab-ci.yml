@@ -1,5 +1,8 @@
 image: google/cloud-sdk:latest  # Usa l'immagine Docker di Google Cloud SDK
 
+variables:
+  CI_DEBUG_TRACE: "true"  # Abilita il debug per la pipeline
+
 stages:
   - deploy
 
