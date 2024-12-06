@@ -8,3 +8,6 @@ deploy:
   stage: deploy
   script:
     - gcloud version
+    - echo "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
+    - gcloud auth activate-service-account --key-file=/gcloud-key.json
+    - gcloud config set project bill-manager-kubernetes  # Cambia con il tuo ID progetto
