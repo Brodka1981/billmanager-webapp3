@@ -13,7 +13,7 @@ variables:
   DOCKER_TAG: $CI_COMMIT_SHORT_SHA
 
 before_script:
-  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 build:
   stage: build
