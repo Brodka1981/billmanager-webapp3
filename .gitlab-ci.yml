@@ -1,8 +1,8 @@
 image: google/cloud-sdk:latest  # Usa l'immagine Docker di Google Cloud SDK
 
 services:
-  - docker:dind
-    command: ["--host=unix:///var/run/docker.sock"]  # Assicurati che il daemon Docker sia avviato
+  - name: docker:dind  # Assicurati che il servizio Docker-in-Docker sia configurato
+    command: ["--host=unix:///var/run/docker.sock"]  # Specifica l'host del daemon Docker
 
 stages:
   - build
