@@ -16,7 +16,7 @@ RUN npm run build --prod
 FROM nginx:stable-alpine
 
 # Copia i file statici Angular generati nella directory di NGINX
-COPY --from=build /app/dist/bill-manager-frontend /usr/share/nginx/html
+COPY --from=build /app/dist/bill-manager-frontend/browser /usr/share/nginx/html
 
 # (Opzionale) Copia una configurazione personalizzata di NGINX
 COPY nginx.conf /etc/nginx/conf.d/default.conf
