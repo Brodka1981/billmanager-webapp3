@@ -11,6 +11,7 @@ deploy:
   stage: deploy
   script:
     - printf "%s" "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
+    - printf "%s" "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
     - cat /gcloud-key.json  # Controlla cosa è stato scritto
     - python3 -c "import json; json.load(open('/gcloud-key.json'))" || echo "Errore nel JSON"
     - gcloud auth activate-service-account --key-file=/gcloud-key.json
