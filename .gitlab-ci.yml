@@ -1,8 +1,14 @@
+image: docker:20.10
+
+services:
+  - docker:dind
+
 stages:
   - build
   - push
 
 variables:
+  DOCKER_DRIVER: overlay2
   DOCKER_IMAGE: alessandromariani160381/billmanager-webapp
   DOCKER_TAG: $CI_COMMIT_SHORT_SHA
 
