@@ -8,7 +8,6 @@ deploy:
   stage: deploy
   script:
     - if [ -z "$GCLOUD_SERVICE_KEY" ]; then echo "GCLOUD_SERVICE_KEY è vuota!"; exit 1; fi
-    - if [ -z "$GCLOUD_SERVICE_KEY" ]; then echo "GCLOUD_SERVICE_KEY è vuota!"; exit 1; fi
     - printf "%s" "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
     - cat /gcloud-key.json  # Controlla cosa è stato scritto
     - python3 -c "import json; json.load(open('/gcloud-key.json'))" || echo "Errore nel JSON"
