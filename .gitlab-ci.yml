@@ -1,26 +1,9 @@
-image: docker:20.10
+image: google/cloud-sdk:latest  # Usa l'immagine Docker di Google Cloud SDK
 
-services:
-  - docker:dind
+  - deploy
 
-stages:
-  - build
-  - push
 
-variables:
-  DOCKER_DRIVER: overlay2
-  DOCKER_IMAGE: alessandromariani160381/billmanager-webapp
-  DOCKER_TAG: $CI_COMMIT_SHORT_SHA
-
-before_script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-build_and_push:
-  stage: build
+deploy:
+  stage: deploy
   script:
-    - docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
-    - docker images # Mostra le immagini per il debug
-    - docker push $DOCKER_IMAGE:$DOCKER_TAG
-
-  only:
-    - master
+    - gcloud version
