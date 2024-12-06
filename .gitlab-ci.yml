@@ -21,6 +21,9 @@ build_and_push:
     - docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
     - docker images # Mostra le immagini per il debug
     - docker push $DOCKER_IMAGE:$DOCKER_TAG
+    - echo "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
+    - gcloud auth activate-service-account --key-file=/gcloud-key.json
+    - gcloud config set project bill-manager-kubernetes  # Cambia con il tuo ID progetto
 
   only:
     - master
