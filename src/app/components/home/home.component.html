@@ -1,0 +1,63 @@
+<app-search (search)="handleSearch($event)"></app-search>
+
+<div class="container my-4">
+  <h1 class="text-center mb-4">Bollette</h1>
+  <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Tipo</th>
+        <th scope="col">Data Scadenza</th>
+        <th scope="col">Importo</th>
+        <th scope="col">Stato</th>
+        <th scope="col">Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let bill of bills">
+        <td>{{ bill.type }}</td>
+        <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}</td>
+        <td>{{ bill.amount | currency:'EUR' }}</td>
+        <td [style.width.px]="126">
+          <span [ngClass]="bill.status == 'Paid' ? 'text-success' : 'text-danger'">
+            {{ bill.status == 'Paid' ? 'Pagato' : 'Non pagato' }}
+          </span>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-primary me-2 action-button" (click)="toggleStatus(bill)">
+            {{ bill.status == 'Unpaid' ? 'Imposta pagata' : 'Imposta non pagata' }}
+          </button>
+          <button class="btn btn-sm btn-warning me-2" *ngIf="bill.id !== undefined" (click)="editBill(bill.id!)">
+            Modifica
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="openModal(bill)">
+            Elimina
+          </button>
+        </td>
+      </tr>
+      <!-- Totale -->
+      <tr>
+        <td colspan="2" class="text-end"><strong>Totale:</strong></td>
+        <td>{{ totalAmount | currency:'EUR' }}</td>
+        <td colspan="2"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modale di conferma -->
+<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma eliminazione</h5>
+      </div>
+      <div class="modal-body">
+        <p>Sei sicuro di voler eliminare questa bolletta?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="deleteBill()">Elimina</button>
+        <button class="btn btn-secondary" (click)="closeModal()">Annulla</button>
+      </div>
+    </div>
+  </div>
+</div>

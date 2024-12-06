@@ -1,0 +1,12 @@
+/* CSS personalizzato per il menu */
+.navbar {
+  margin-bottom: 20px; /* Spazio sotto la navbar */
+}
+
+.nav-link {
+  font-weight: bold; /* Testo dei link in grassetto */
+}
+
+.nav-link:hover {
+  background-color: #f8f9fa; /* Colore di sfondo al passaggio del mouse */
+}

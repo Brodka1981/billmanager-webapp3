@@ -1,0 +1,45 @@
+<div class="container my-4">
+  <h1 class="text-center mb-4">{{ isEditMode ? 'Modifica Bolletta' : 'Aggiungi Bolletta' }}</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6"> <!-- Limita la larghezza del modulo -->
+      <form (ngSubmit)="saveBill()" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <!-- Dropdown per selezionare il tipo -->
+          <label for="type" class="form-label">Tipo:</label>
+          <select id="type" class="form-select" [(ngModel)]="bill.type" name="type" required>
+            <option value="" disabled selected>Selezionare il tipo</option>
+            <option *ngFor="let type of billTypes" [value]="type">{{ type }}</option>
+          </select>
+          <div class="invalid-feedback">
+            Seleziona un tipo di bolletta.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <!-- Input per l'importo -->
+          <label for="amount" class="form-label">Importo:</label>
+          <input id="amount" type="number" class="form-control" [(ngModel)]="bill.amount" name="amount" required />
+          <div class="invalid-feedback">
+            Inserisci un importo valido.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <!-- Input per la data di scadenza -->
+          <label for="dueDate" class="form-label">Data di Scadenza:</label>
+          <input id="dueDate" type="date" class="form-control" [(ngModel)]="bill.dueDate" name="dueDate" required />
+          <div class="invalid-feedback">
+            Seleziona una data di scadenza.
+          </div>
+        </div>
+
+        <!-- Pulsanti allineati a destra -->
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2" [disabled]="!bill.type">Salva</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

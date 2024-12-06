@@ -1,0 +1,50 @@
+<div class="container my-4">
+  <form (ngSubmit)="onSearch()" class="row g-3 align-items-end">
+    <!-- Dropdown per Tipo -->
+    <div class="col-md-3">
+      <label for="type" class="form-label">Tipo</label>
+      <select id="type" class="form-select" [(ngModel)]="filters.type" name="type">
+        <option value="" selected>Tutti</option>
+        <option *ngFor="let type of billTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <!-- Dropdown per Stato -->
+    <div class="col-md-3">
+      <label for="status" class="form-label">Stato pagamento</label>
+      <select id="status" class="form-select" [(ngModel)]="filters.status" name="status">
+        <option value="" selected>Tutti</option>
+        <option *ngFor="let status of billStatuses" [value]="status">{{ statusMapping[status] }}</option>
+      </select>
+    </div>
+
+    <!-- Data di Inizio -->
+    <div class="col-md-3">
+      <label for="startDate" class="form-label">Data Inizio</label>
+      <input
+        type="date"
+        id="startDate"
+        class="form-control"
+        [(ngModel)]="filters.startDate"
+        name="startDate"
+      />
+    </div>
+
+    <!-- Data di Fine -->
+    <div class="col-md-3">
+      <label for="endDate" class="form-label">Data Fine</label>
+      <input
+        type="date"
+        id="endDate"
+        class="form-control"
+        [(ngModel)]="filters.endDate"
+        name="endDate"
+      />
+    </div>
+
+    <!-- Pulsante Cerca -->
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Cerca</button>
+    </div>
+  </form>
+</div>
