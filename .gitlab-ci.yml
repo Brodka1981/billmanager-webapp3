@@ -1,4 +1,4 @@
-image: docker:20.10
+image: google/cloud-sdk:latest  # Usa l'immagine Docker di Google Cloud SDK
 
 services:
   - docker:dind
