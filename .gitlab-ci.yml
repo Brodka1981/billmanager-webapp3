@@ -8,6 +8,7 @@ deploy:
   stage: deploy
   script:
     - printf "%s" "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
-    - cat /gcloud-key.json  # Debug: controlla il file
+    - cat /gcloud-key.json  # Verifica visivamente
+    - python3 -c "import json; json.load(open('/gcloud-key.json'))" || echo "Errore nel JSON"
     - gcloud auth activate-service-account --key-file=/gcloud-key.json
     - gcloud config set project bill-manager-kubernates
