@@ -34,7 +34,7 @@ deploy:
     - cat /gcloud-key.json
     - python3 -c "import json; json.load(open('/gcloud-key.json'))" || echo "Errore nel JSON"
     - gcloud auth activate-service-account --key-file=/gcloud-key.json
-    - gcloud container clusters get-credentials billmanager-cluster --zone europe-west1-b
+    - gcloud container clusters get-credentials billmanager-cluster --zone europe-west1-b --project bill-manager-kubernates
     - sed -i "s|image:.*|image:${DOCKER_IMAGE}:${DOCKER_TAG}|" webapp-deployment.yaml
     - kubectl apply -f webapp-deployment.yaml
   only:
