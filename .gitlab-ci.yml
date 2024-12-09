@@ -31,8 +31,6 @@ deploy:
   script:
     - export PATH="$PATH:/root/google-cloud-sdk/bin"  # Assicurati che gcloud sia nel PATH
     - printf "%s" "$GCLOUD_SERVICE_KEY" > /gcloud-key.json
-    - cat /gcloud-key.json
-    - python3 -c "import json; json.load(open('/gcloud-key.json'))" || echo "Errore nel JSON"
     - gcloud auth activate-service-account --key-file=/gcloud-key.json
     - gcloud components install gke-gcloud-auth-plugin
     - gcloud components install kubectl  # Installa kubectl
