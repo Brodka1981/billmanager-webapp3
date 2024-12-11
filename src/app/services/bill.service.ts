@@ -11,13 +11,23 @@ export interface Bill {
   propertyId: number
 }
 
+export interface Property {
+  id?: number;
+  name: string;
+  address: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 
 export class BillService {
+  /** PRODUZIONE **/
   private apiUrl = 'http://34.76.130.38/api/bills'; // Per BE in locale http://localhost:5000/api/bills
   private apiPropertiesUrl = 'http://34.76.130.38/api/Properties'; // Per BE in locale  http://localhost:5000/api/Properties
+  /** LOCALE **/
+  //private apiUrl = 'http://localhost:5000/api/bills';
+  //private apiPropertiesUrl = 'http://localhost:5000/api/Properties';
 
 
   constructor(private http: HttpClient) {}
@@ -25,6 +35,10 @@ export class BillService {
   // Ottieni tutte le bollette
   getBills(): Observable<Bill[]> {
     return this.http.get<Bill[]>(this.apiUrl);
+  }
+
+  getPropertyById(propertyId: number): Observable<Property> {
+    return this.http.get<Property>(`${this.apiPropertiesUrl}/${propertyId}`);
   }
 
   getBillsByProperty(propertyId: number): Observable<Bill[]> {

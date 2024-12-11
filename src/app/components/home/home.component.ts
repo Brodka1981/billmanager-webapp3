@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Bill, BillService } from '../../services/bill.service';
+import { Bill, BillService, Property } from '../../services/bill.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -13,6 +13,7 @@ import { SearchComponent } from "../search/search.component";
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+  property: Property | undefined;
   bills: Bill[] = [];
   totalAmount: number = 0; // Totale importo
   showModal: boolean = false; // Stato della modale
@@ -27,8 +28,15 @@ export class HomeComponent implements OnInit {
       const id = params.get('propertyId');
       if (id) {
         this.propertyId = +id; // Convertiamo il valore in un numero
+        this.getPropertyById(this.propertyId);
         this.getBillsByProperty(this.propertyId);
       }
+    });
+  }
+
+  getPropertyById(propertyId: number): void {
+    this.billService.getPropertyById(propertyId).subscribe((prop) => {
+      this.property = prop;
     });
   }
 
