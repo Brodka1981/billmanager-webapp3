@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Bill {
   id?: number;
@@ -22,13 +23,9 @@ export interface Property {
 })
 
 export class BillService {
-  /** PRODUZIONE **/
-  private apiUrl = 'http://34.76.130.38/api/bills'; // Per BE in locale http://localhost:5000/api/bills
-  private apiPropertiesUrl = 'http://34.76.130.38/api/Properties'; // Per BE in locale  http://localhost:5000/api/Properties
-  /** LOCALE **/
-  //private apiUrl = 'http://localhost:5000/api/bills';
-  //private apiPropertiesUrl = 'http://localhost:5000/api/Properties';
-
+  // Utilizza le variabili dell'ambiente
+  private apiUrl = environment.apiUrl;
+  private apiPropertiesUrl = environment.apiPropertiesUrl;
 
   constructor(private http: HttpClient) {}
 
