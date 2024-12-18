@@ -19,6 +19,8 @@ export class HomeComponent implements OnInit {
   showModal: boolean = false; // Stato della modale
   selectedBill: Bill | null = null; // Bolletta selezionata per eliminazione
   propertyId!: number;
+  isSearchVisible: boolean = true;
+  titleSuffix: string = '';
 
   constructor(private billService: BillService, private router: Router, private route: ActivatedRoute) {}
 
@@ -29,7 +31,24 @@ export class HomeComponent implements OnInit {
       if (id) {
         this.propertyId = +id; // Convertiamo il valore in un numero
         this.getPropertyById(this.propertyId);
-        this.getBillsByProperty(this.propertyId);
+        // Controlliamo i segmenti di URL
+        this.route.url.subscribe((urlSegments) => {
+          const isUpcoming = urlSegments.some(segment => segment.path === 'upcoming');
+          const isExpired = urlSegments.some(segment => segment.path === 'expired');
+          // Mostriamo la ricerca solo nella vista "Tutte le bollette"
+          this.isSearchVisible = !(isUpcoming || isExpired);
+
+          if (isUpcoming) {
+            this.titleSuffix = 'Imminenti';
+            this.getUpcomingBills(this.propertyId); // Carichiamo le bollette imminenti
+          } else if (isExpired) {
+            this.titleSuffix = 'Scadute';
+            this.getExpiredBills(this.propertyId); // Carichiamo le bollette scadute
+          } else {
+            this.titleSuffix = ''; // Nessun suffisso per tutte le bollette
+            this.getBillsByProperty(this.propertyId); // Carichiamo tutte le bollette
+          }
+        });
       }
     });
   }
@@ -46,6 +65,35 @@ export class HomeComponent implements OnInit {
       this.bills = bills;
       this.updateTotalAmount(); // Aggiorna il totale
     });
+  }
+
+  getUpcomingBills(propertyId: number): void {
+    this.billService.getUpcomingBills(propertyId, this.getDatePlus7Days()).subscribe((bills) => {
+      this.bills = bills;
+      this.updateTotalAmount();
+    });
+  }
+
+  getExpiredBills(propertyId: number): void {
+    this.billService.getExpiredBills(propertyId).subscribe((bills) => {
+      this.bills = bills;
+      this.updateTotalAmount();
+    });
+  }
+
+  getDatePlus7Days(): string {
+    const currentDate = new Date();
+
+    // Aggiungi 7 giorni
+    currentDate.setDate(currentDate.getDate() + 7);
+
+    // Estrai anno, mese e giorno
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Mesi da 0 a 11
+    const day = currentDate.getDate().toString().padStart(2, '0');
+
+    // Ritorna la data formattata
+    return `${year}-${month}-${day}`;
   }
 
   handleSearch(filters: any): void {

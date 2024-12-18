@@ -7,7 +7,10 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/" routerLinkActive="active" aria-current="page">Home</a>
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page">Bollette Imminenti</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page">Bollette Scadute</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'add-bill']" routerLinkActive="active">Aggiungi Bolletta</a>

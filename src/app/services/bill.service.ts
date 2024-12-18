@@ -54,6 +54,14 @@ export class BillService {
     return this.http.get<Bill[]>(`${this.apiPropertiesUrl}/${propertyId}/Bills`, { params });
   }
 
+  getUpcomingBills(propertyId: number, endDate: string): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.apiPropertiesUrl}/${propertyId}/Bills/Upcoming?endDate=${endDate}`);
+  }
+
+  getExpiredBills(propertyId: number): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${this.apiPropertiesUrl}/${propertyId}/Bills/Overdue`);
+  }
+
   // Aggiungi una nuova bolletta
   addBill(bill: Bill): Observable<Bill> {
     return this.http.post<Bill>(this.apiUrl, bill);
