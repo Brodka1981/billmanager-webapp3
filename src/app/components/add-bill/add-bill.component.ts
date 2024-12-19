@@ -67,12 +67,12 @@ export class AddBillComponent implements OnInit {
     if (this.isEditMode) {
       // Modifica esistente
       this.billService.updateBill(this.bill.id!, formattedBill).subscribe(() => {
-        this.router.navigate(['/']); // Torna alla home dopo l'aggiornamento
+        this.router.navigate(['/properties', this.propertyId]); // Torna alla lista delle bollette
       });
     } else {
       // Creazione nuova bolletta
       this.billService.addBill(formattedBill).subscribe(() => {
-        this.router.navigate(['/']); // Torna alla home dopo la creazione
+        this.router.navigate(['/properties', this.propertyId]); // Torna alla lista delle bollette
       });
     }
   }

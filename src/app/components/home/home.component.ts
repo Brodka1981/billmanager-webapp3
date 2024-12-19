@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -59,26 +60,28 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Metodo per ottenere le bollette relative a una proprietà specifica
-  getBillsByProperty(propertyId: number): void {
-    this.billService.getBillsByProperty(propertyId).subscribe((bills) => {
-      this.bills = bills;
+  // Metodo generico per ottenere le bollette
+  private fetchBills(propertyId: number, fetchFunction: (propertyId: number, ...args: any[]) => Observable<Bill[]>): void {
+    fetchFunction(propertyId).subscribe((bills) => {
+      // Ordina le bollette in base alla data di scadenza (dueDate)
+      this.bills = bills.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
       this.updateTotalAmount(); // Aggiorna il totale
     });
   }
 
-  getUpcomingBills(propertyId: number): void {
-    this.billService.getUpcomingBills(propertyId, this.getDatePlus7Days()).subscribe((bills) => {
-      this.bills = bills;
-      this.updateTotalAmount();
-    });
+  // Metodo per ottenere le bollette relative a una proprietà specifica
+  getBillsByProperty(propertyId: number): void {
+    this.fetchBills(propertyId, this.billService.getBillsByProperty.bind(this.billService));
   }
 
+  // Metodo per ottenere le bollette in scadenza
+  getUpcomingBills(propertyId: number): void {
+    this.fetchBills(propertyId, (id) => this.billService.getUpcomingBills(id, this.getDatePlus7Days()));
+  }
+
+  // Metodo per ottenere le bollette scadute
   getExpiredBills(propertyId: number): void {
-    this.billService.getExpiredBills(propertyId).subscribe((bills) => {
-      this.bills = bills;
-      this.updateTotalAmount();
-    });
+    this.fetchBills(propertyId, this.billService.getExpiredBills.bind(this.billService));
   }
 
   getDatePlus7Days(): string {
