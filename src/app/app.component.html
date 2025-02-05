@@ -1,19 +1,31 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" [routerLink]="['/properties', currentPropertyId]">Gestione Bollette</a>
+    <a class="navbar-brand" [routerLink]="['/admin']">Gestione Bollette</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
+        <!-- Elementi visibili solo se !isAdminRoute -->
+        <li class="nav-item" *ngIf="!isAdminRoute">
           <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page">Bollette Imminenti</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="!isAdminRoute">
           <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page">Bollette Scadute</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="!isAdminRoute">
           <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'add-bill']" routerLinkActive="active">Aggiungi Bolletta</a>
+        </li>
+        <!-- Menu a scomparsa -->
+        <li class="nav-item dropdown" *ngIf="!isLoginRoute">
+          <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-gear"></i> <!-- Icona ingranaggio -->
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+            <li><a class="dropdown-item" href="#" (click)="navigateToSettings()">Impostazioni</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#" (click)="logout()">Logout</a></li>
+          </ul>
         </li>
       </ul>
     </div>

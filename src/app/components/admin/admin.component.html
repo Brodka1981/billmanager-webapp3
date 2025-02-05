@@ -1,0 +1,57 @@
+<div class="container my-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-center">Proprietà di {{ userName }}</h1>
+    <button class="btn btn-primary" (click)="addProperty()">Aggiungi Proprietà</button>
+  </div>
+  <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Indirizzo</th>
+        <th scope="col">Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let property of properties">
+        <td>{{ property.id }}</td>
+        <td>
+          <a [routerLink]="['/properties', property.id]">
+            {{ property.name }}
+          </a>
+        </td>
+        <td>{{ property.address }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property.id!)">
+            Modifica
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="openModal(property)">
+            Elimina
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modale di conferma -->
+<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Conferma eliminazione</h5>
+      </div>
+      <div class="modal-body">
+        <p>Sei sicuro di voler eliminare questa proprietà?</p>
+        <!-- Messaggio di errore -->
+        <div *ngIf="errorMessage" class="alert alert-danger">
+          {{ errorMessage }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" (click)="deleteProperty()">Elimina</button>
+        <button class="btn btn-secondary" (click)="closeModal()">Annulla</button>
+      </div>
+    </div>
+  </div>
+</div>

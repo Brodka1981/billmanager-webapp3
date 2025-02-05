@@ -1,0 +1,33 @@
+<div class="container my-4">
+  <h1 class="text-center mb-4">{{ isEditMode ? 'Modifica Proprietà' : 'Aggiungi Proprietà' }}</h1>
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6"> <!-- Limita la larghezza del modulo -->
+      <form (ngSubmit)="saveProperty()" class="needs-validation" novalidate>
+
+        <div class="mb-3">
+          <label for="name" class="form-label">Nome:</label>
+          <input id="name" type="string" class="form-control" [(ngModel)]="property.name" name="name" required />
+          <div class="invalid-feedback">
+            Inserisci un nome.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <!-- Input per la data di scadenza -->
+          <label for="address" class="form-label">Indirizzo:</label>
+          <input id="address" type="string" class="form-control" [(ngModel)]="property.address" name="address" required />
+          <div class="invalid-feedback">
+            Inserisci un indirizzo.
+          </div>
+        </div>
+
+        <!-- Pulsanti allineati a destra -->
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2" [disabled]="!property.name">Salva</button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Annulla</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

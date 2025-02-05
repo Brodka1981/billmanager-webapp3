@@ -1,0 +1,84 @@
+<div class="d-flex justify-content-center align-items-start vh-100 mt-5" style="padding-top: 7rem;">
+  <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+    <h2 class="text-center mb-4">Registrazione</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="firstName" class="form-label">Nome:</label>
+        <input
+          id="firstName"
+          formControlName="firstName"
+          type="text"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched }"
+        />
+        <div *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" class="invalid-feedback">
+          Il nome è obbligatorio.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="lastName" class="form-label">Cognome:</label>
+        <input
+          id="lastName"
+          formControlName="lastName"
+          type="text"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched }"
+        />
+        <div *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" class="invalid-feedback">
+          Il cognome è obbligatorio.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': registerForm.get('email')?.invalid && registerForm.get('email')?.touched }"
+        />
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="invalid-feedback">
+          Inserire un'email valida.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <input
+          id="password"
+          formControlName="password"
+          type="password"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': registerForm.get('password')?.invalid && registerForm.get('password')?.touched }"
+        />
+        <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="invalid-feedback">
+          La password è obbligatoria e di almeno 6 caratteri.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="confirmPassword" class="form-label">Conferma Password:</label>
+        <input
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          type="password"
+          class="form-control"
+          [ngClass]="{
+            'is-invalid': (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) ||
+            registerForm.errors?.['notMatching']
+          }"
+        />
+        <div *ngIf="registerForm.errors?.['notMatching']" class="invalid-feedback">
+          Le password devono coincidere.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" [disabled]="registerForm.invalid">Registrati</button>
+    </form>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

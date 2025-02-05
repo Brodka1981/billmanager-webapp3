@@ -1,18 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterModule, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from './services/auth.service';
 
 @Component({
   standalone: true,
-  imports: [RouterOutlet, RouterModule],
+  imports: [RouterOutlet, RouterModule, CommonModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   currentPropertyId!: number | null;
+  isAdminRoute = false; // Variabile per tracciare se siamo in un percorso admin
+  isLoginRoute = false; // Variabile per tracciare se siamo nella login
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+
+  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.router.events
@@ -22,6 +27,9 @@ export class AppComponent implements OnInit {
         childRoute.params.subscribe((params) => {
           this.currentPropertyId = params['propertyId'] ? +params['propertyId'] : null;
         });
+        // Controlla se il percorso corrente contiene "admin"
+        this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register');
+        this.isLoginRoute = this.router.url.includes('login') || this.router.url.includes('register');
       });
   }
 
@@ -31,6 +39,15 @@ export class AppComponent implements OnInit {
       route = route.firstChild;
     }
     return route;
+  }
+
+  logout(): void {
+    this.authService.logout(); // Rimuove il token o i dati utente
+    this.router.navigate(['/login']); // Reindirizza alla pagina di login
+  }
+
+  navigateToSettings(): void {
+    //this.router.navigate(['/settings']); // Reindirizza alla pagina delle impostazioni
   }
 
 }

@@ -15,7 +15,8 @@ export interface Bill {
 export interface Property {
   id?: number;
   name: string;
-  address: number;
+  address: string;
+  userid?: number;
 }
 
 @Injectable({

@@ -27,7 +27,6 @@ export class AddBillComponent implements OnInit {
   isEditMode: boolean = false;
 
   propertyId!: number;
-  // Costruttore AddBillComponent sdsddssfsdfsfsd
   constructor(private billService: BillService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {

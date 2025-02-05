@@ -1,0 +1,43 @@
+<div class="d-flex justify-content-center align-items-start vh-100 mt-5" style="padding-top: 7rem;">
+  <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+    <h2 class="text-center mb-4">Login</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email:</label>
+        <input
+          id="email"
+          formControlName="email"
+          type="email"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched }"
+        />
+        <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched" class="invalid-feedback">
+          Inserire un'email valida.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password:</label>
+        <input
+          id="password"
+          formControlName="password"
+          type="password"
+          class="form-control"
+          [ngClass]="{ 'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched }"
+        />
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="invalid-feedback">
+          La password è obbligatoria.
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">Login</button>
+    </form>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+    <div class="text-center mt-3">
+      <span>Non hai un account? </span>
+      <a [routerLink]="['/register']">Registrati qui</a>
+    </div>
+  </div>
+</div>
