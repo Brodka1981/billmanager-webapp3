@@ -34,7 +34,7 @@ deploy:
     - gcloud auth activate-service-account --key-file=/gcloud-key.json
     - gcloud components install gke-gcloud-auth-plugin
     - gcloud components install kubectl  # Installa kubectl
-    - gcloud container clusters get-credentials billmanager-cluster --zone europe-west1-b --project bill-manager-kubernates
+    - gcloud container clusters get-credentials billmanager-cluster-eu --zone europe-west1-b --project bill-manager-kubernates
     - kubectl set image deployment/webapp webapp=${DOCKER_IMAGE}:${DOCKER_TAG} --record
   only:
     - master
