@@ -5,15 +5,20 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
 import { Observable } from 'rxjs';
+import { LucideAngularModule, Lightbulb, Flame, Droplet } from 'lucide-angular';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, RouterModule, SearchComponent],
+  imports: [CommonModule, HttpClientModule, RouterModule, SearchComponent, LucideAngularModule,],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
+  readonly Light = Lightbulb;
+  readonly Flame = Flame;
+  readonly Drop = Droplet;
+
   property: Property | undefined;
   bills: Bill[] = [];
   totalAmount: number = 0; // Totale importo

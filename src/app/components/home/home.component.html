@@ -1,7 +1,14 @@
 <app-search *ngIf="isSearchVisible" (search)="handleSearch($event)"></app-search>
 
 <div class="container my-4">
-  <h1 class="text-center mb-4">Bollette {{ titleSuffix ? titleSuffix : '' }} <span *ngIf="!titleSuffix">di {{ property?.name }}</span></h1>
+  <div class="d-flex align-items-center mb-4">
+    <a *ngIf="titleSuffix" [routerLink]="['/properties', property?.id]" class="me-3 btn btn-link">
+      ← tutte le bollette
+    </a>
+    <h1 class="text-center flex-grow-1 mb-0">
+      Bollette {{ titleSuffix ? titleSuffix : '' }} <span>di {{ property?.name }}</span>
+    </h1>
+  </div>
   <table class="table table-striped table-bordered">
     <thead class="thead-dark">
       <tr>
@@ -14,7 +21,12 @@
     </thead>
     <tbody>
       <tr *ngFor="let bill of bills">
-        <td>{{ bill.type }}</td>
+        <td>
+          <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
+          <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
+          <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
+          {{ bill.type }}
+        </td>
         <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}</td>
         <td>{{ bill.amount | currency:'EUR' }}</td>
         <td [style.width.px]="126">
@@ -37,7 +49,7 @@
       <!-- Totale -->
       <tr>
         <td colspan="2" class="text-end"><strong>Totale:</strong></td>
-        <td>{{ totalAmount | currency:'EUR' }}</td>
+        <td><strong>{{ totalAmount | currency:'EUR' }}</strong></td>
         <td colspan="2"></td>
       </tr>
     </tbody>

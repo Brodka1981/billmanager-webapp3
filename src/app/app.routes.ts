@@ -9,11 +9,11 @@ import { RegisterComponent } from './components/register/register.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'admin', pathMatch: 'full' }, // Route di default
-  { path: 'properties/:propertyId', component: HomeComponent },
-  { path: 'properties/:propertyId/upcoming', component: HomeComponent },
-  { path: 'properties/:propertyId/expired', component: HomeComponent },
-  { path: 'properties/:propertyId/add-bill', component: AddBillComponent },
-  { path: 'properties/:propertyId/edit-bill/:id', component: AddBillComponent },
+  { path: 'properties/:propertyId', component: HomeComponent, canActivate: [authGuard] },
+  { path: 'properties/:propertyId/upcoming', component: HomeComponent, canActivate: [authGuard] },
+  { path: 'properties/:propertyId/expired', component: HomeComponent, canActivate: [authGuard] },
+  { path: 'properties/:propertyId/add-bill', component: AddBillComponent, canActivate: [authGuard] },
+  { path: 'properties/:propertyId/edit-bill/:id', component: AddBillComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },

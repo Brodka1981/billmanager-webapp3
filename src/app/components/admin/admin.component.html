@@ -6,7 +6,6 @@
   <table class="table table-striped table-bordered">
     <thead class="thead-dark">
       <tr>
-        <th scope="col">Id</th>
         <th scope="col">Nome</th>
         <th scope="col">Indirizzo</th>
         <th scope="col">Azioni</th>
@@ -14,7 +13,6 @@
     </thead>
     <tbody>
       <tr *ngFor="let property of properties">
-        <td>{{ property.id }}</td>
         <td>
           <a [routerLink]="['/properties', property.id]">
             {{ property.name }}
