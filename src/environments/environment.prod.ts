@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiAdmin: 'https://34.76.130.38/api/Admin',
-  apiUrl: 'http://34.76.130.38/api/bills',
-  apiPropertiesUrl: 'http://34.76.130.38/api/Properties'
+  apiAdmin: 'http://35.241.231.144/api/Admin',
+  apiUrl: 'http://35.241.231.144/api/bills',
+  apiPropertiesUrl: 'http://35.241.231.144/api/Properties'
 };
