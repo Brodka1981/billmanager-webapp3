@@ -6,6 +6,8 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
 import { Observable } from 'rxjs';
 import { LucideAngularModule, Lightbulb, Flame, Droplet } from 'lucide-angular';
+import { AuthService } from '../../services/auth.service';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
   selector: 'app-home',
@@ -28,15 +30,19 @@ export class HomeComponent implements OnInit {
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
 
-  constructor(private billService: BillService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit(): void {
+    const key = this.authService.getToken();
+    if (!key) {
+      this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
+    }
     // Otteniamo il parametro propertyId dall'URL
     this.route.paramMap.subscribe((params) => {
       const id = params.get('propertyId');
       if (id) {
         this.propertyId = +id; // Convertiamo il valore in un numero
-        this.getPropertyById(this.propertyId);
+        this.getPropertyById(key!, this.propertyId);
         // Controlliamo i segmenti di URL
         this.route.url.subscribe((urlSegments) => {
           const isUpcoming = urlSegments.some(segment => segment.path === 'upcoming');
@@ -59,9 +65,10 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  getPropertyById(propertyId: number): void {
-    this.billService.getPropertyById(propertyId).subscribe((prop) => {
-      this.property = prop;
+  getPropertyById(key: string, propertyId: number): void {
+    this.adminService.getPropertyById(key, propertyId).subscribe({
+      next: (data) => (this.property = data),
+      error: (error) => this.handleHttpError(error)
     });
   }
 
@@ -153,6 +160,15 @@ export class HomeComponent implements OnInit {
         this.updateTotalAmount(); // Ricalcola il totale
         this.closeModal(); // Chiudi la modale
       });
+    }
+  }
+
+  private handleHttpError(error: any): void {
+    if (error.status === 401 || error.status === 403) {
+      this.authService.logout(); // Rimuovi il token scaduto
+      this.router.navigate(['/login'], { queryParams: { error: 'Autorizzazione scaduta, accedi nuovamente.' } });
+    } else {
+      console.error('Errore durante l’accesso ai dati amministrativi.', error);
     }
   }
 }

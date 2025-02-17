@@ -35,10 +35,6 @@ export class BillService {
     return this.http.get<Bill[]>(this.apiUrl);
   }
 
-  getPropertyById(propertyId: number): Observable<Property> {
-    return this.http.get<Property>(`${this.apiPropertiesUrl}/${propertyId}`);
-  }
-
   getBillsByProperty(propertyId: number): Observable<Bill[]> {
     return this.http.get<Bill[]>(`${this.apiPropertiesUrl}/${propertyId}/Bills`);
   }
