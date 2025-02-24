@@ -7,7 +7,7 @@
 
 export const environment = {
   production: true,
-  apiAdmin: 'http://api-service.default.svc.cluster.local/api/Admin',
-  apiUrl: 'http://api-service.default.svc.cluster.local/api/bills',
-  apiPropertiesUrl: 'http://api-service.default.svc.cluster.local/api/Properties'
+  apiAdmin: 'http://api-service/api/Admin',
+  apiUrl: 'http://api-service/api/bills',
+  apiPropertiesUrl: 'http://api-service/api/Properties'
 };
