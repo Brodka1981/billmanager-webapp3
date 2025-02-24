@@ -7,7 +7,7 @@
 
 export const environment = {
   production: true,
-  apiAdmin: 'http://api-service/api/Admin',
-  apiUrl: 'http://api-service/api/bills',
-  apiPropertiesUrl: 'http://api-service/api/Properties'
+  apiAdmin: 'http://35.205.45.171:30080/api/Admin',
+  apiUrl: 'http://35.205.45.171:30080/api/bills',
+  apiPropertiesUrl: 'http://35.205.45.171:30080/api/Properties'
 };
