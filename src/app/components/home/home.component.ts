@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { LucideAngularModule, Lightbulb, Flame, Droplet } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Component({
   selector: 'app-home',
@@ -30,7 +31,7 @@ export class HomeComponent implements OnInit {
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
 
-  constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService) {}
+  constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService) {}
 
   ngOnInit(): void {
     const key = this.authService.getToken();
@@ -68,7 +69,7 @@ export class HomeComponent implements OnInit {
   getPropertyById(key: string, propertyId: number): void {
     this.adminService.getPropertyById(key, propertyId).subscribe({
       next: (data) => (this.property = data),
-      error: (error) => this.handleHttpError(error)
+      error: (error) => this.errorHandler.handleHttpError(error)
     });
   }
 
@@ -160,15 +161,6 @@ export class HomeComponent implements OnInit {
         this.updateTotalAmount(); // Ricalcola il totale
         this.closeModal(); // Chiudi la modale
       });
-    }
-  }
-
-  private handleHttpError(error: any): void {
-    if (error.status === 401 || error.status === 403) {
-      this.authService.logout(); // Rimuovi il token scaduto
-      this.router.navigate(['/login'], { queryParams: { error: 'Autorizzazione scaduta, accedi nuovamente.' } });
-    } else {
-      console.error('Errore durante l’accesso ai dati amministrativi.', error);
     }
   }
 }

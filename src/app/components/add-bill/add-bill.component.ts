@@ -3,6 +3,9 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Bill, BillService } from '../../services/bill.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AdminService } from '../../services/admin.service';
+import { AuthService } from '../../services/auth.service';
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Component({
   selector: 'app-add-bill',
@@ -27,9 +30,14 @@ export class AddBillComponent implements OnInit {
   isEditMode: boolean = false;
 
   propertyId!: number;
-  constructor(private billService: BillService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private authService: AuthService, private adminService: AdminService, private billService: BillService, private router: Router, private route: ActivatedRoute,
+    private errorHandler: ErrorHandlerService) {}
 
   ngOnInit(): void {
+    const key = this.authService.getToken();
+    if (!key) {
+      this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
+    }
     // Recupera il propertyId dalla route
     this.route.paramMap.subscribe((params) => {
       const propertyIdParam = params.get('propertyId');
@@ -43,18 +51,21 @@ export class AddBillComponent implements OnInit {
     const billId = this.route.snapshot.paramMap.get('id');
     if (billId) {
       this.isEditMode = true;
-      this.getBillDetails(Number(billId));
+      this.getBillDetails(key!, Number(billId));
     }
   }
 
   // Recupera i dettagli della bolletta per popolare il modulo
-  getBillDetails(id: number): void {
-    this.billService.getBillById(id).subscribe((bill) => {
-      // Converte la data da "YYYY-MM-DDTHH:mm:ss" a "YYYY-MM-DD"
-      if (bill.dueDate) {
-        bill.dueDate = bill.dueDate.split('T')[0];
-      }
-      this.bill = bill;
+  getBillDetails(token: string, id: number): void {
+    this.adminService.getBillById(token, id).subscribe({
+      next: (bill) => {
+        // Converte la data da "YYYY-MM-DDTHH:mm:ss" a "YYYY-MM-DD"
+        if (bill.dueDate) {
+          bill.dueDate = bill.dueDate.split('T')[0];
+        }
+        this.bill = bill;
+      },
+      error: (error) => this.errorHandler.handleHttpError(error)
     });
   }
 
@@ -70,8 +81,15 @@ export class AddBillComponent implements OnInit {
       });
     } else {
       // Creazione nuova bolletta
-      this.billService.addBill(formattedBill).subscribe(() => {
-        this.router.navigate(['/properties', this.propertyId]); // Torna alla lista delle bollette
+      const key = this.authService.getToken();
+      if (!key) {
+        this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
+      }
+      this.adminService.addBill(key!, formattedBill).subscribe({
+        next: () => {
+          this.router.navigate(['/properties', this.propertyId]); // Torna alla lista delle bollette
+        },
+        error: (error) => this.errorHandler.handleHttpError(error)
       });
     }
   }
@@ -79,6 +97,5 @@ export class AddBillComponent implements OnInit {
   cancel(): void {
     this.router.navigate(['/properties', this.propertyId]); // Torna alla lista delle bollette
   }
-
 
 }

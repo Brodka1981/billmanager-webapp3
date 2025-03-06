@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Property } from '../../services/bill.service';
 import { AdminService } from '../../services/admin.service';
 import { AuthService, JwtClaim } from '../../services/auth.service';
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Component({
   selector: 'app-add-property',
@@ -21,7 +22,7 @@ export class AddPropertyComponent implements OnInit {
   // Flag per distinguere creazione da modifica
   isEditMode: boolean = false;
 
-  constructor(private authService: AuthService, private adminService: AdminService, private router: Router, private route: ActivatedRoute) {}
+  constructor(private authService: AuthService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private errorHandler: ErrorHandlerService) {}
   ngOnInit(): void {
     const key = this.authService.getToken();
     if (!key) {
@@ -40,7 +41,7 @@ export class AddPropertyComponent implements OnInit {
   getPropertyDetails(token: string, id: number): void {
     this.adminService.getPropertyById(token, id).subscribe({
       next: (data) => (this.property = data),
-      error: (error) => this.handleHttpError(error)
+      error: (error) => this.errorHandler.handleHttpError(error)
     });
   }
 
@@ -50,28 +51,19 @@ export class AddPropertyComponent implements OnInit {
       // Modifica esistente
       this.adminService.updateProperty(this.authService.getToken()!,this.property.id!, this.property).subscribe({
         next: (data) => (this.router.navigate(['/admin'])),
-        error: (error) => this.handleHttpError(error)
+        error: (error) => this.errorHandler.handleHttpError(error)
       });
     } else {
       // Creazione nuova bolletta
       this.adminService.addProperty(this.authService.getToken()!, this.property).subscribe({
         next: (data) => (this.router.navigate(['/admin'])),
-        error: (error) => this.handleHttpError(error)
+        error: (error) => this.errorHandler.handleHttpError(error)
       });
     }
   }
 
   cancel(){
     this.router.navigate(['/admin']);
-  }
-
-  private handleHttpError(error: any): void {
-    if (error.status === 401 || error.status === 403) {
-      this.authService.logout(); // Rimuovi il token scaduto
-      this.router.navigate(['/login'], { queryParams: { error: 'Autorizzazione scaduta, accedi nuovamente.' } });
-    } else {
-      console.error('Errore durante l’accesso ai dati amministrativi.', error);
-    }
   }
 
 }

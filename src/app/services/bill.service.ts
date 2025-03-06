@@ -59,16 +59,6 @@ export class BillService {
     return this.http.get<Bill[]>(`${this.apiPropertiesUrl}/${propertyId}/Bills/Overdue`);
   }
 
-  // Aggiungi una nuova bolletta
-  addBill(bill: Bill): Observable<Bill> {
-    return this.http.post<Bill>(this.apiUrl, bill);
-  }
-
-  // Recupera una bolletta specifica
-  getBillById(id: number): Observable<Bill> {
-    return this.http.get<Bill>(`${this.apiUrl}/${id}`);
-  }
-
   // Elimina una bolletta
   deleteBill(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);

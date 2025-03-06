@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { catchError, Observable, throwError } from 'rxjs';
-import { Property } from './bill.service';
+import { Bill, Property } from './bill.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,6 @@ export class AdminService {
   constructor(private http: HttpClient) { }
 
   registerUser(user: any): Observable<any> {
-    //console.log(user)
     return this.http.post(`${this.apiAdmin}/registerUser`, user);
   }
 
@@ -57,6 +56,15 @@ export class AdminService {
     );
   }
 
+  getBillById(token: string, id:number): Observable<Bill> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Bill>(`${this.apiAdmin}/getBillById/${id}`, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error); // Passa l'errore al chiamante
+      })
+    );
+  }
+
   updateProperty(token: string, id: number, propertyData: Property): Observable<void> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.put<void>(`${this.apiAdmin}/putProperty/${id}`, propertyData, { headers }).pipe(
@@ -78,5 +86,15 @@ export class AdminService {
   deleteProperty(token: string, id: number): Observable<void> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete<void>(`${this.apiAdmin}/deleteProperty/${id}`, { headers });
+  }
+
+  // Aggiungi una nuova bolletta
+  addBill(token: string, bill: Bill): Observable<Bill> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<Bill>(`${this.apiAdmin}/addBill`, bill, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error); // Passa l'errore al chiamante
+      })
+    );
   }
 }

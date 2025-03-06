@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService, JwtClaim } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { Property } from '../../services/bill.service';
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Component({
   selector: 'app-admin',
@@ -20,7 +21,7 @@ export class AdminComponent {
   showModal: boolean = false; // Stato della modale
   errorMessage: string | null = null;
   selectedProperty: Property | null = null; // Proprietà selezionata per eliminazione
-  constructor(private adminService: AdminService, private authService: AuthService, private router: Router,) {}
+  constructor(private adminService: AdminService, private authService: AuthService, private router: Router,private errorHandler: ErrorHandlerService) {}
 
   ngOnInit(): void {
     const key = this.authService.getToken();
@@ -35,7 +36,7 @@ export class AdminComponent {
   getProperties(key: string, idUser: number): void {
     this.adminService.getPropertiesByUserId(key, idUser).subscribe({
       next: (data) => (this.properties = data),
-      error: (error) => this.handleHttpError(error)
+      error: (error) => this.errorHandler.handleHttpError(error)
     });
   }
 
@@ -76,19 +77,10 @@ export class AdminComponent {
             // Gestisci l'errore quando ci sono Bills associati
             this.errorMessage = "Impossibile eliminare la proprietà: ci sono bollette associate.";
           } else {
-            this.handleHttpError(error);
+            this.errorHandler.handleHttpError(error);
           }
         },
       });
-    }
-  }
-
-  private handleHttpError(error: any): void {
-    if (error.status === 401 || error.status === 403) {
-      this.authService.logout(); // Rimuovi il token scaduto
-      this.router.navigate(['/login'], { queryParams: { error: 'Autorizzazione scaduta, accedi nuovamente.' } });
-    } else {
-      console.error('Errore durante l’accesso ai dati amministrativi.', error);
     }
   }
 }
