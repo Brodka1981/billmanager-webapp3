@@ -1,0 +1,10 @@
+/* Aumenta le dimensioni del toggle switch senza sovrapposizioni */
+.custom-toggle {
+  width: 2.5rem;
+  height: 1.5rem;
+}
+
+/* Mantiene uno spazio equilibrato tra label e toggle */
+.ms-3 {
+  margin-left: 1rem !important;
+}

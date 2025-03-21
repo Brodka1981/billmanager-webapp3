@@ -97,4 +97,24 @@ export class AdminService {
       })
     );
   }
+
+  getAuthenticatedUser(token: string): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.apiAdmin}/getAuthenticatedUser`, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error); // Passa l'errore al chiamante
+      })
+    );
+  }
+
+  // Aggiorna la preferenza delle notifiche
+  updateNotificationPreference(token: string, receiveNotifications: boolean): Observable<any> {
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = { ReceiveNotificationsExpiredBills: receiveNotifications };
+    return this.http.put(`${this.apiAdmin}/updateReceiveNotifications`, body, { headers }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        return throwError(() => error); // Passa l'errore al chiamante
+      })
+    );
+  }
 }

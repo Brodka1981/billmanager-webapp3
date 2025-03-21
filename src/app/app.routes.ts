@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { authGuard } from './guards/auth.guard';
 import { AddPropertyComponent } from './components/add-property/add-property.component';
 import { RegisterComponent } from './components/register/register.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'admin', pathMatch: 'full' }, // Route di default
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'properties/:propertyId/edit-bill/:id', component: AddBillComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
   { path: 'admin/add-property', component: AddPropertyComponent, canActivate: [authGuard] },
   { path: 'admin/edit-property/:id', component: AddPropertyComponent, canActivate: [authGuard] },

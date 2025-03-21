@@ -12,6 +12,7 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
+  currentUrl: string = '';
   currentPropertyId!: number | null;
   isAdminRoute = false; // Variabile per tracciare se siamo in un percorso admin
   isLoginRoute = false; // Variabile per tracciare se siamo nella login
@@ -28,8 +29,9 @@ export class AppComponent implements OnInit {
           this.currentPropertyId = params['propertyId'] ? +params['propertyId'] : null;
         });
         // Controlla se il percorso corrente contiene "admin"
-        this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register');
+        this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('settings');
         this.isLoginRoute = this.router.url.includes('login') || this.router.url.includes('register');
+        this.currentUrl = this.router.url; // Memorizza l'URL attuale
       });
   }
 
@@ -45,9 +47,4 @@ export class AppComponent implements OnInit {
     this.authService.logout(); // Rimuove il token o i dati utente
     this.router.navigate(['/login']); // Reindirizza alla pagina di login
   }
-
-  navigateToSettings(): void {
-    //this.router.navigate(['/settings']); // Reindirizza alla pagina delle impostazioni
-  }
-
 }
