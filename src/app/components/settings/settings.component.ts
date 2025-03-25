@@ -41,19 +41,18 @@ export class SettingsComponent {
   // Recupera le impostazioni dal backend
   loadUserSettings() {
     const key = this.authService.getToken();
-    if (!key) {
-      this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
+    if (key) {
+      this.adminService.getAuthenticatedUser(key!).subscribe(
+        user => {
+          this.settingsForm.patchValue({
+            receiveNotificationsExpiredBills: user.receiveNotificationsExpiredBills
+          });
+        },
+        error => {
+          console.error('Errore nel recupero delle impostazioni:', error);
+        }
+      );
     }
-    this.adminService.getAuthenticatedUser(key!).subscribe(
-      user => {
-        this.settingsForm.patchValue({
-          receiveNotificationsExpiredBills: user.receiveNotificationsExpiredBills
-        });
-      },
-      error => {
-        console.error('Errore nel recupero delle impostazioni:', error);
-      }
-    );
   }
 
   onSave() {
