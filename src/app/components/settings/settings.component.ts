@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -13,26 +13,29 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './settings.component.css'
 })
 export class SettingsComponent {
-  returnUrl: string = '/admin'; // Default in caso di accesso diretto
   settingsForm: FormGroup;
   showSuccessToast = false; // Variabile per gestire la toast
   showErrorToast = false;
   isSaving = false; // Flag per mostrare lo spinner e disabilitare i pulsanti
-  user:any;
 
-  constructor(private fb: FormBuilder, private adminService: AdminService, private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+  constructor(private fb: FormBuilder, private adminService: AdminService, private authService: AuthService, private router: Router) {
     this.settingsForm = this.fb.group({
       receiveNotificationsExpiredBills: [false] // Default: false (disattivato)
-    });
-    this.route.queryParams.subscribe(params => {
-      if (params['returnUrl']) {
-        this.returnUrl = params['returnUrl'];
-      }
     });
   }
 
   ngOnInit() {
     this.loadUserSettings();
+  }
+
+  ngAfterViewInit() {
+    // Intercetta l'evento di apertura della modale
+    const modalElement = document.getElementById('settingsModal');
+    if (modalElement) {
+      modalElement.addEventListener('shown.bs.modal', () => {
+        this.loadUserSettings();
+      });
+    }
   }
 
   // Recupera le impostazioni dal backend
@@ -43,7 +46,6 @@ export class SettingsComponent {
     }
     this.adminService.getAuthenticatedUser(key!).subscribe(
       user => {
-        this.user = user;
         this.settingsForm.patchValue({
           receiveNotificationsExpiredBills: user.receiveNotificationsExpiredBills
         });
@@ -66,10 +68,18 @@ export class SettingsComponent {
       response => {
         this.isSaving = false;
         this.showSuccessToast = true; // Mostra la toast
+
         setTimeout(() => {
           this.showSuccessToast = false; // Nasconde la toast dopo 3s
-          //this.router.navigateByUrl(this.returnUrl); // Naviga ad un'altra pagina (opzionale)
-        }, 2000);
+          // Chiudi la modale dopo la visualizzazione della toast
+          const modalElement = document.getElementById('settingsModal');
+          if (modalElement) {
+            const modalInstance = (window as any).bootstrap.Modal.getInstance(modalElement); // Usa window per bypassare TypeScript
+            if (modalInstance) {
+              modalInstance.hide(); // Chiude la modale
+            }
+          }
+        }, 1000);
       },
       error => {
         console.error('Errore durante il salvataggio:', error);
@@ -80,10 +90,5 @@ export class SettingsComponent {
         }, 2000);
       }
     );
-    console.log('Impostazioni salvate:', this.settingsForm.value.receiveNotificationsExpiredBills);
-  }
-
-  onCancel() {
-    this.router.navigateByUrl(this.returnUrl);
   }
 }

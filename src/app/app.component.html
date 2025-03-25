@@ -22,7 +22,7 @@
             <i class="bi bi-gear"></i> <!-- Icona ingranaggio -->
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-            <li><a class="dropdown-item" [routerLink]="['/settings']" [queryParams]="{ returnUrl: currentUrl }">Impostazioni</a></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">Impostazioni</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-danger" href="#" (click)="logout()">Esci</a></li>
           </ul>
@@ -31,4 +31,18 @@
     </div>
   </div>
 </nav>
+<!-- Modale Impostazioni -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="settingsModalLabel">Impostazioni di {{ user?.firstName }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+      </div>
+      <div class="modal-body">
+        <app-settings></app-settings> <!-- Il componente caricato dentro la modale -->
+      </div>
+    </div>
+  </div>
+</div>
 <router-outlet></router-outlet>
