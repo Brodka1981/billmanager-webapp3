@@ -4,7 +4,6 @@ import { RouterOutlet, RouterModule, ActivatedRoute, Router, NavigationEnd } fro
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
 import { SettingsComponent } from "./components/settings/settings.component";
-import { AdminService } from './services/admin.service';
 
 @Component({
   standalone: true,
@@ -22,7 +21,7 @@ export class AppComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService, private adminService: AdminService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.router.events
@@ -37,19 +36,6 @@ export class AppComponent implements OnInit {
         this.isLoginRoute = this.router.url.includes('login') || this.router.url.includes('register');
         this.currentUrl = this.router.url; // Memorizza l'URL attuale
       });
-
-      const key = this.authService.getToken();
-      if (!key) {
-        this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
-      }
-      this.adminService.getAuthenticatedUser(key!).subscribe(
-        user => {
-          this.user = user;
-        },
-        error => {
-          console.error('Errore nel recupero delle impostazioni:', error);
-        }
-      );
   }
 
   // Trova la route figlia attiva
