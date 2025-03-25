@@ -18,6 +18,7 @@ export class SettingsComponent {
   showSuccessToast = false; // Variabile per gestire la toast
   showErrorToast = false;
   isSaving = false; // Flag per mostrare lo spinner e disabilitare i pulsanti
+  user:any;
 
   constructor(private fb: FormBuilder, private adminService: AdminService, private authService: AuthService, private router: Router, private route: ActivatedRoute) {
     this.settingsForm = this.fb.group({
@@ -42,6 +43,7 @@ export class SettingsComponent {
     }
     this.adminService.getAuthenticatedUser(key!).subscribe(
       user => {
+        this.user = user;
         this.settingsForm.patchValue({
           receiveNotificationsExpiredBills: user.receiveNotificationsExpiredBills
         });
