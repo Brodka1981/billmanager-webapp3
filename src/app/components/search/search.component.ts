@@ -33,4 +33,16 @@ export class SearchComponent {
   onSearch() {
     this.search.emit(this.filters);
   }
+
+  onReset() {
+    // Resetta i filtri allo stato iniziale
+    this.filters = {
+      type: '',
+      status: '',
+      startDate: '',
+      endDate: '',
+    };
+
+    this.onSearch();
+  }
 }
