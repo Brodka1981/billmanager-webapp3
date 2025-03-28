@@ -77,7 +77,7 @@ export class HomeComponent implements OnInit {
   private fetchBills(propertyId: number, fetchFunction: (propertyId: number, ...args: any[]) => Observable<Bill[]>): void {
     fetchFunction(propertyId).subscribe((bills) => {
       // Ordina le bollette in base alla data di scadenza (dueDate)
-      this.bills = bills.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+      this.bills = bills.sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
       this.updateTotalAmount(); // Aggiorna il totale
     });
   }
@@ -116,7 +116,7 @@ export class HomeComponent implements OnInit {
     this.billService
       .getBillsByFilters(this.propertyId, filters)
       .subscribe((bills) => {
-        this.bills = bills;
+        this.bills = bills.sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
         this.updateTotalAmount(); // Aggiorna il totale
       });
   }
