@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -9,13 +9,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   @Output() search = new EventEmitter<any>(); // Emittente per notificare la ricerca al parent
 
   // Filtri di ricerca
   filters = {
     type: '',
-    status: 'Unpaid',
+    status: '',
     startDate: '',
     endDate: '',
   };
@@ -28,10 +28,6 @@ export class SearchComponent implements OnInit {
     Paid: 'Pagato',
     Unpaid: 'Non pagato'
   };
-
-  ngOnInit(): void {
-    this.search.emit(this.filters); // emette subito i filtri di default
-  }
 
   // Emette l'evento di ricerca
   onSearch() {
