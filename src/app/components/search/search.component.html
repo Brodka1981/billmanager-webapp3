@@ -13,7 +13,7 @@
     <div class="col-md-3">
       <label for="status" class="form-label">Stato pagamento</label>
       <select id="status" class="form-select" [(ngModel)]="filters.status" name="status">
-        <option value="" selected>Tutti</option>
+        <option value="">Tutti</option>
         <option *ngFor="let status of billStatuses" [value]="status">{{ statusMapping[status] }}</option>
       </select>
     </div>
