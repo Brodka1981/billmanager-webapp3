@@ -42,3 +42,13 @@
   font-size: 14px; /* Riduci la dimensione del font se necessario */
 }
 
+.text-brown {
+  --bs-text-opacity: 1;
+  color: rgb(140, 62, 24) !important
+}
+
+.text-green {
+  --bs-text-opacity: 1;
+  color: rgb(72, 167, 52) !important;
+}
+

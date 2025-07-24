@@ -25,6 +25,8 @@
           <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
           <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
           <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
+          <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
+          <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
           {{ bill.type }}
         </td>
         <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}</td>

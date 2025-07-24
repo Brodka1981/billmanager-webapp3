@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
 import { Observable } from 'rxjs';
-import { LucideAngularModule, Lightbulb, Flame, Droplet } from 'lucide-angular';
+import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
@@ -21,6 +21,8 @@ export class HomeComponent implements OnInit {
   readonly Light = Lightbulb;
   readonly Flame = Flame;
   readonly Drop = Droplet;
+  readonly Recycle = Recycle;
+  readonly Tractor = Tractor;
 
   property: Property | undefined;
   bills: Bill[] = [];

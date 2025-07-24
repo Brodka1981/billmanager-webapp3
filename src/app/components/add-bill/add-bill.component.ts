@@ -16,7 +16,7 @@ import { ErrorHandlerService } from '../../shared/error-handler.service';
 })
 export class AddBillComponent implements OnInit {
   // Lista delle opzioni per il tipo di bolletta
-  billTypes: string[] = ['Luce', 'Gas', 'Acqua'];
+  billTypes: string[] = ['Luce', 'Gas', 'Acqua','Tari','Bonifica'];
 
   bill: Bill = {
     type: '',

@@ -21,7 +21,7 @@ export class SearchComponent {
   };
 
   // Tipi e stati possibili
-  billTypes = ['Luce', 'Gas', 'Acqua'];
+  billTypes = ['Luce', 'Gas', 'Acqua','Tari','Bonifica'];
   billStatuses = ['Paid', 'Unpaid'];
 
   statusMapping: { [key: string]: string } = {
