@@ -165,4 +165,8 @@ export class HomeComponent implements OnInit {
       });
     }
   }
+
+  isBillExpired(bill: Bill): boolean {
+    return new Date(bill.dueDate) < new Date() && bill.status !== 'Paid';
+  }
 }

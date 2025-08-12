@@ -51,4 +51,16 @@
   --bs-text-opacity: 1;
   color: rgb(72, 167, 52) !important;
 }
+/* tono più saturo per fondo bianco
+.expired-bill:nth-child(even) {
+  background-color: rgba(240, 169, 176, 1) !important;
+}
 
+tono meno saturo per fondo grigio
+.expired-bill:nth-child(odd) {
+  background-color: rgb(77, 93, 125) !important;
+}
+*/
+.expired-bill {
+  border-left: 4px solid #dc3545;
+}

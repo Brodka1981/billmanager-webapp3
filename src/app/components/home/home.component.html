@@ -20,7 +20,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let bill of bills">
+      <tr *ngFor="let bill of bills" [ngClass]="{ 'expired-bill': isBillExpired(bill) }">
         <td>
           <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
           <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
@@ -29,7 +29,9 @@
           <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
           {{ bill.type }}
         </td>
-        <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}</td>
+        <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}
+          <span *ngIf="isBillExpired(bill)" class="badge bg-danger ms-1">Scaduta</span>
+        </td>
         <td>{{ bill.amount | currency:'EUR' }}</td>
         <td [style.width.px]="126">
           <span [ngClass]="bill.status == 'Paid' ? 'text-success' : 'text-danger'">
