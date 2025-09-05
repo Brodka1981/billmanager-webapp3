@@ -27,7 +27,8 @@
           <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
           <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
           <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
-          {{ bill.type }}
+          <i-lucide [img]="House" class="text-violet" *ngIf="bill.type === 'SpeseCondominiali'"></i-lucide>
+          {{ billTypeLabels[bill.type] }}
         </td>
         <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}
           <span *ngIf="isBillExpired(bill)" class="badge bg-danger ms-1">Scaduta</span>

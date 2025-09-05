@@ -5,10 +5,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
 import { Observable } from 'rxjs';
-import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle } from 'lucide-angular';
+import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
+import { BILL_TYPE_LABELS } from '../../shared/bill-type-labels';
 
 @Component({
   selector: 'app-home',
@@ -23,6 +24,7 @@ export class HomeComponent implements OnInit {
   readonly Drop = Droplet;
   readonly Recycle = Recycle;
   readonly Tractor = Tractor;
+  readonly House = House;
 
   property: Property | undefined;
   bills: Bill[] = [];
@@ -32,6 +34,8 @@ export class HomeComponent implements OnInit {
   propertyId!: number;
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
+
+  billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;;
 
   constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService) {}
 

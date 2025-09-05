@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
 
 @Component({
   selector: 'app-search',
@@ -21,7 +22,8 @@ export class SearchComponent {
   };
 
   // Tipi e stati possibili
-  billTypes = ['Luce', 'Gas', 'Acqua','Tari','Bonifica'];
+  billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
+  billTypes = BILL_TYPES;
   billStatuses = ['Paid', 'Unpaid'];
 
   statusMapping: { [key: string]: string } = {

@@ -47,6 +47,11 @@
   color: rgb(140, 62, 24) !important
 }
 
+.text-violet {
+  --bs-text-opacity: 1;
+  color: rgba(147, 51, 234, var(--bs-text-opacity)) !important; /* #9333EA */
+}
+
 .text-green {
   --bs-text-opacity: 1;
   color: rgb(72, 167, 52) !important;

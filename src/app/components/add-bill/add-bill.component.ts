@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
+import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
 
 @Component({
   selector: 'app-add-bill',
@@ -16,7 +17,8 @@ import { ErrorHandlerService } from '../../shared/error-handler.service';
 })
 export class AddBillComponent implements OnInit {
   // Lista delle opzioni per il tipo di bolletta
-  billTypes: string[] = ['Luce', 'Gas', 'Acqua','Tari','Bonifica'];
+  billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
+  billTypes: string[] = BILL_TYPES;
 
   bill: Bill = {
     type: '',

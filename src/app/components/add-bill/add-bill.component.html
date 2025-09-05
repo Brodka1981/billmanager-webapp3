@@ -9,7 +9,7 @@
           <label for="type" class="form-label">Tipo:</label>
           <select id="type" class="form-select" [(ngModel)]="bill.type" name="type" required>
             <option value="" disabled selected>Selezionare il tipo</option>
-            <option *ngFor="let type of billTypes" [value]="type">{{ type }}</option>
+            <option *ngFor="let type of billTypes" [value]="type">{{ billTypeLabels[type] }}</option>
           </select>
           <div class="invalid-feedback">
             Seleziona un tipo di bolletta.
