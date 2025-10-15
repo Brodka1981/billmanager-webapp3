@@ -1,7 +1,7 @@
 <div class="container my-4">
   <form (ngSubmit)="onSearch()" class="row g-3 align-items-end">
     <!-- Dropdown per Tipo -->
-    <div class="col-md-3">
+    <div class="col-md-2">
       <label for="type" class="form-label">Tipo</label>
       <select id="type" class="form-select" [(ngModel)]="filters.type" name="type">
         <option value="" selected>Tutti</option>
@@ -10,11 +10,20 @@
     </div>
 
     <!-- Dropdown per Stato -->
-    <div class="col-md-3">
+    <div class="col-md-2">
       <label for="status" class="form-label">Stato pagamento</label>
       <select id="status" class="form-select" [(ngModel)]="filters.status" name="status">
         <option value="" selected>Tutti</option>
         <option *ngFor="let status of billStatuses" [value]="status">{{ statusMapping[status] }}</option>
+      </select>
+    </div>
+
+    <!-- Dropdown per Anno -->
+    <div class="col-md-2">
+      <label for="year" class="form-label">Anno</label>
+      <select id="year" class="form-select" [(ngModel)]="filters.year" name="year" (ngModelChange)="onYearChange()">
+        <option value="" selected>Tutti</option>
+        <option *ngFor="let year of billYears" [value]="year">{{ year }}</option>
       </select>
     </div>
 
@@ -26,6 +35,7 @@
         id="startDate"
         class="form-control"
         [(ngModel)]="filters.startDate"
+        [disabled]="filters.year !== ''"
         name="startDate"
       />
     </div>
@@ -38,6 +48,7 @@
         id="endDate"
         class="form-control"
         [(ngModel)]="filters.endDate"
+        [disabled]="filters.year !== ''"
         name="endDate"
       />
     </div>

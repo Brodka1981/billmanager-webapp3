@@ -34,6 +34,7 @@ export class HomeComponent implements OnInit {
   propertyId!: number;
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
+  selectedYear: string = '';
 
   billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;;
 
@@ -65,7 +66,8 @@ export class HomeComponent implements OnInit {
             this.getExpiredBills(this.propertyId); // Carichiamo le bollette scadute
           } else {
             this.titleSuffix = ''; // Nessun suffisso per tutte le bollette
-            this.getBillsByProperty(this.propertyId); // Carichiamo tutte le bollette
+            //this.getBillsByProperty(this.propertyId); // Carichiamo tutte le bollette
+            this.getBillsByPropertyAndYear(this.propertyId); // Carichiamo tutte le bollette dell'anno corrente
           }
         });
       }
@@ -88,9 +90,32 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Metodo per ottenere le bollette relative a una proprietà specifica
+  // Metodo per ottenere tutte le bollette relative a una proprietà specifica
   getBillsByProperty(propertyId: number): void {
     this.fetchBills(propertyId, this.billService.getBillsByProperty.bind(this.billService));
+  }
+
+  // Metodo per ottenere tutte le bollette dell'anno corrente
+  getBillsByPropertyAndYear(propertyId: number): void {
+
+    // Anno corrente
+    const currentYear = new Date().getFullYear();
+    this.selectedYear = String(currentYear);
+    // Primo giorno dell'anno (1 gennaio)
+    const startDate = new Date(currentYear, 0, 1); // mese 0 = gennaio
+    // Ultimo giorno dell'anno (31 dicembre)
+    const endDate = new Date(currentYear, 11, 31); // mese 11 = dicembre
+
+    // Resetta i filtri allo stato iniziale
+    const filters = {
+      type: '',
+      status: '',
+      year: this.selectedYear,
+      startDate: startDate.toISOString().split('T')[0], // "YYYY-MM-DD"
+      endDate: endDate.toISOString().split('T')[0],
+    };
+
+    this.fetchBills(propertyId, (id) => this.billService.getBillsByFilters(id, filters));
   }
 
   // Metodo per ottenere le bollette in scadenza
@@ -119,6 +144,9 @@ export class HomeComponent implements OnInit {
   }
 
   handleSearch(filters: any): void {
+    // Salvo l’anno selezionato per mostrarlo nel titolo
+    this.selectedYear = filters.year !== '' ? filters.year : '';
+
     this.billService
       .getBillsByFilters(this.propertyId, filters)
       .subscribe((bills) => {
