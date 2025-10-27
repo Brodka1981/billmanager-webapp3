@@ -9,12 +9,13 @@ import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
-import { BILL_TYPE_LABELS } from '../../shared/bill-type-labels';
+import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, RouterModule, SearchComponent, LucideAngularModule,],
+  imports: [CommonModule, HttpClientModule, RouterModule, SearchComponent, LucideAngularModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -29,14 +30,17 @@ export class HomeComponent implements OnInit {
   property: Property | undefined;
   bills: Bill[] = [];
   totalAmount: number = 0; // Totale importo
-  showModal: boolean = false; // Stato della modale
+  showModal: boolean = false; // Stato della modale eliminazione
   selectedBill: Bill | null = null; // Bolletta selezionata per eliminazione
+  showEditModal: boolean = false; // Stato della modale di modifica
+  editingBill: Bill | null = null; // Bolletta selezionata per modifica
   propertyId!: number;
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
   selectedYear: string = '';
 
-  billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;;
+  billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
+  billTypes: string[] = BILL_TYPES;
 
   constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService) {}
 
@@ -169,9 +173,38 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  // Naviga alla pagina di modifica
-  editBill(id: number): void {
-    this.router.navigate([`/properties/${this.propertyId}/edit-bill`, id]);
+  // Apre la modale di modifica popolando i dati della bolletta
+  openEditModal(bill: Bill): void {
+    const normalizedDueDate = bill.dueDate && bill.dueDate.includes('T')
+      ? bill.dueDate.split('T')[0]
+      : bill.dueDate;
+    this.editingBill = { ...bill, propertyId: this.propertyId, dueDate: normalizedDueDate };
+    this.showEditModal = true;
+  }
+
+  // Chiude la modale di modifica senza salvare
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.editingBill = null;
+  }
+
+  // Salva le modifiche apportate alla bolletta
+  saveEditedBill(): void {
+    if (!this.editingBill?.id) {
+      return;
+    }
+
+    const formattedDueDate = new Date(this.editingBill.dueDate).toISOString().split('T')[0];
+    const updatedBill: Bill = { ...this.editingBill, dueDate: formattedDueDate };
+
+    this.billService.updateBill(this.editingBill.id, updatedBill).subscribe(() => {
+      const index = this.bills.findIndex((bill) => bill.id === this.editingBill?.id);
+      if (index !== -1) {
+        this.bills[index] = { ...updatedBill };
+        this.updateTotalAmount();
+      }
+      this.closeEditModal();
+    });
   }
 
   // Apre la modale e salva la bolletta selezionata

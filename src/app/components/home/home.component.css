@@ -15,7 +15,6 @@
   padding: 20px;
   border-radius: 8px;
   text-align: center;
-  width: 300px;
 }
 
 .modal-actions {
@@ -28,9 +27,16 @@
 }
 
 /* CSS personalizzato per modale compatta */
-.modal-content {
+.modal-content.confirmation-modal {
   width: 300px; /* Imposta una larghezza fissa */
   margin: auto; /* Centra la modale nella finestra */
+}
+
+.form-modal {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  text-align: left;
 }
 
 .modal-header, .modal-footer {

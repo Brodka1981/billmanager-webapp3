@@ -43,7 +43,7 @@
           <button class="btn btn-sm btn-primary me-2 action-button" (click)="toggleStatus(bill)">
             {{ bill.status == 'Unpaid' ? 'Imposta pagata' : 'Imposta non pagata' }}
           </button>
-          <button class="btn btn-sm btn-warning me-2" *ngIf="bill.id !== undefined" (click)="editBill(bill.id!)">
+          <button class="btn btn-sm btn-warning me-2" *ngIf="bill.id !== undefined" (click)="openEditModal(bill)">
             Modifica
           </button>
           <button class="btn btn-sm btn-danger" (click)="openModal(bill)">
@@ -60,11 +60,43 @@
     </tbody>
   </table>
 </div>
-
+<!-- Modale di modifica bolletta -->
+<div *ngIf="showEditModal && editingBill" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content form-modal">
+      <div class="modal-header">
+        <h5 class="modal-title">Modifica bolletta</h5>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveEditedBill()">
+          <div class="mb-3">
+            <label for="editType" class="form-label">Tipo</label>
+            <select id="editType" class="form-select" [(ngModel)]="editingBill.type" name="editType" required>
+              <option value="" disabled>Seleziona un tipo</option>
+              <option *ngFor="let type of billTypes" [ngValue]="type">{{ billTypeLabels[type] }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="editAmount" class="form-label">Importo</label>
+            <input id="editAmount" type="number" class="form-control" [(ngModel)]="editingBill.amount" name="editAmount" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDueDate" class="form-label">Data di scadenza</label>
+            <input id="editDueDate" type="date" class="form-control" [(ngModel)]="editingBill.dueDate" name="editDueDate" required>
+          </div>
+          <div class="modal-footer justify-content-end px-0">
+            <button type="button" class="btn btn-secondary me-2" (click)="closeEditModal()">Annulla</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!editingBill.type">Salva</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Modale di conferma -->
 <div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content confirmation-modal">
       <div class="modal-header">
         <h5 class="modal-title">Conferma eliminazione</h5>
       </div>
