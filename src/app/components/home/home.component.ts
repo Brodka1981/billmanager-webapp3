@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,OnDestroy,OnInit } from '@angular/core';
 import { Bill, BillService, Property } from '../../services/bill.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
 import { FormsModule } from '@angular/forms';
+import { BillModalService } from '../../services/bill-modal.service';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +20,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   readonly Light = Lightbulb;
   readonly Flame = Flame;
   readonly Drop = Droplet;
@@ -38,25 +39,34 @@ export class HomeComponent implements OnInit {
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
   selectedYear: string = '';
+  private subscriptions = new Subscription();
+  private urlSubscription?: Subscription;
 
   billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
   billTypes: string[] = BILL_TYPES;
 
-  constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService) {}
+  constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService,
+    private billModalService: BillModalService
+  ) {}
 
   ngOnInit(): void {
     const key = this.authService.getToken();
     if (!key) {
       this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
     }
+
+    this.subscriptions.add(
+      this.billModalService.billCreated$.subscribe((createdBill) => this.handleBillCreated(createdBill))
+    );
     // Otteniamo il parametro propertyId dall'URL
-    this.route.paramMap.subscribe((params) => {
+    const paramsSubscription = this.route.paramMap.subscribe((params) => {
       const id = params.get('propertyId');
       if (id) {
         this.propertyId = +id; // Convertiamo il valore in un numero
         this.getPropertyById(key!, this.propertyId);
         // Controlliamo i segmenti di URL
-        this.route.url.subscribe((urlSegments) => {
+        this.urlSubscription?.unsubscribe();
+        this.urlSubscription = this.route.url.subscribe((urlSegments) => {
           const isUpcoming = urlSegments.some(segment => segment.path === 'upcoming');
           const isExpired = urlSegments.some(segment => segment.path === 'expired');
           // Mostriamo la ricerca solo nella vista "Tutte le bollette"
@@ -74,10 +84,15 @@ export class HomeComponent implements OnInit {
             this.getBillsByPropertyAndYear(this.propertyId); // Carichiamo tutte le bollette dell'anno corrente
           }
         });
+        this.subscriptions.add(this.urlSubscription);
       }
     });
+    this.subscriptions.add(paramsSubscription);
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
   getPropertyById(key: string, propertyId: number): void {
     this.adminService.getPropertyById(key, propertyId).subscribe({
       next: (data) => (this.property = data),
@@ -162,6 +177,25 @@ export class HomeComponent implements OnInit {
   // Calcola il totale dell'importo
   updateTotalAmount(): void {
     this.totalAmount = this.bills.reduce((sum, bill) => sum + bill.amount, 0);
+  }
+
+  private handleBillCreated(createdBill: Bill): void {
+    if (!createdBill || createdBill.propertyId !== this.propertyId) {
+      return;
+    }
+
+    const normalizedBill: Bill = {
+      ...createdBill,
+      status: createdBill.status
+        ? (createdBill.status.toLowerCase() === 'unpaid' ? 'Unpaid' : createdBill.status)
+        : 'Unpaid',
+      dueDate: createdBill.dueDate
+        ? (createdBill.dueDate.includes('T') ? createdBill.dueDate : new Date(createdBill.dueDate).toISOString())
+        : createdBill.dueDate
+    };
+
+    this.bills = [...this.bills, normalizedBill].sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
+    this.updateTotalAmount();
   }
 
   // Cambia lo stato della bolletta

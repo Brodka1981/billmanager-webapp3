@@ -14,7 +14,7 @@
           <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page">Bollette Scadute</a>
         </li>
         <li class="nav-item" *ngIf="!isAdminRoute">
-          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'add-bill']" routerLinkActive="active">Aggiungi Bolletta</a>
+          <a class="nav-link force-pointer" routerLinkActive="active" (click)="openAddBillModal($event)">Aggiungi Bolletta</a>
         </li>
         <!-- Menu a scomparsa -->
         <li class="nav-item dropdown" *ngIf="!isLoginRoute">
@@ -41,6 +41,38 @@
       </div>
       <div class="modal-body">
         <app-settings></app-settings> <!-- Il componente caricato dentro la modale -->
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="showAddBillModal && newBill" class="modal fade show d-block global-add-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content form-modal">
+      <div class="modal-header">
+        <h5 class="modal-title">Aggiungi bolletta</h5>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveNewBill()">
+          <div class="mb-3">
+            <label for="globalAddType" class="form-label">Tipo</label>
+            <select id="globalAddType" class="form-select" [(ngModel)]="newBill.type" name="globalAddType" required>
+              <option value="" disabled>Seleziona un tipo</option>
+              <option *ngFor="let type of billTypes" [ngValue]="type">{{ billTypeLabels[type] }}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="globalAddAmount" class="form-label">Importo</label>
+            <input id="globalAddAmount" type="number" class="form-control" [(ngModel)]="newBill.amount" name="globalAddAmount" required>
+          </div>
+          <div class="mb-3">
+            <label for="globalAddDueDate" class="form-label">Data di scadenza</label>
+            <input id="globalAddDueDate" type="date" class="form-control" [(ngModel)]="newBill.dueDate" name="globalAddDueDate" required>
+          </div>
+          <div class="modal-footer justify-content-end px-0">
+            <button type="button" class="btn btn-secondary me-2" (click)="closeAddBillModal()">Annulla</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!newBill.type || !newBill.dueDate">Salva</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

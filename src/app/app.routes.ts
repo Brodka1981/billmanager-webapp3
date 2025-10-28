@@ -12,8 +12,6 @@ export const routes: Routes = [
   { path: 'properties/:propertyId', component: HomeComponent, canActivate: [authGuard] },
   { path: 'properties/:propertyId/upcoming', component: HomeComponent, canActivate: [authGuard] },
   { path: 'properties/:propertyId/expired', component: HomeComponent, canActivate: [authGuard] },
-  { path: 'properties/:propertyId/add-bill', component: AddBillComponent, canActivate: [authGuard] },
-  { path: 'properties/:propertyId/edit-bill/:id', component: AddBillComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },

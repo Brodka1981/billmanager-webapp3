@@ -24,3 +24,41 @@
 .dropdown-menu {
   min-width: 200px;
 }
+
+.force-pointer {
+  cursor: pointer;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+.form-modal {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  text-align: left;
+}
+
+.modal-header, .modal-footer {
+  padding: 0.5rem 1rem; /* Riduci il padding */
+}
+
+.modal-body {
+  padding: 1rem; /* Riduci il padding */
+  font-size: 14px; /* Riduci la dimensione del font se necessario */
+}
+
+.global-add-modal {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.global-add-modal .modal-dialog {
+  background: transparent;
+}
+
+
+
+
