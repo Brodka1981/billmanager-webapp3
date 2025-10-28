@@ -13,6 +13,14 @@ import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
 import { FormsModule } from '@angular/forms';
 import { BillModalService } from '../../services/bill-modal.service';
 
+interface BillFilters {
+  type: string;
+  status: string;
+  year: string;
+  startDate: string;
+  endDate: string;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -39,6 +47,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   isSearchVisible: boolean = true;
   titleSuffix: string = '';
   selectedYear: string = '';
+  currentFilters: BillFilters | null = null;
   private subscriptions = new Subscription();
   private urlSubscription?: Subscription;
 
@@ -111,6 +120,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Metodo per ottenere tutte le bollette relative a una proprietà specifica
   getBillsByProperty(propertyId: number): void {
+    this.currentFilters = null;
     this.fetchBills(propertyId, this.billService.getBillsByProperty.bind(this.billService));
   }
 
@@ -134,16 +144,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       endDate: endDate.toISOString().split('T')[0],
     };
 
+    this.currentFilters = { ...filters };
     this.fetchBills(propertyId, (id) => this.billService.getBillsByFilters(id, filters));
   }
 
   // Metodo per ottenere le bollette in scadenza
   getUpcomingBills(propertyId: number): void {
+    this.currentFilters = null;
     this.fetchBills(propertyId, (id) => this.billService.getUpcomingBills(id, this.getDatePlus7Days()));
   }
 
   // Metodo per ottenere le bollette scadute
   getExpiredBills(propertyId: number): void {
+    this.currentFilters = null;
     this.fetchBills(propertyId, this.billService.getExpiredBills.bind(this.billService));
   }
 
@@ -165,6 +178,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   handleSearch(filters: any): void {
     // Salvo l’anno selezionato per mostrarlo nel titolo
     this.selectedYear = filters.year !== '' ? filters.year : '';
+    this.currentFilters = { ...filters };
 
     this.billService
       .getBillsByFilters(this.propertyId, filters)
@@ -193,6 +207,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         ? (createdBill.dueDate.includes('T') ? createdBill.dueDate : new Date(createdBill.dueDate).toISOString())
         : createdBill.dueDate
     };
+
+    if (!this.matchesCurrentFilters(normalizedBill)) {
+      return;
+    }
 
     this.bills = [...this.bills, normalizedBill].sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
     this.updateTotalAmount();
@@ -232,15 +250,52 @@ export class HomeComponent implements OnInit, OnDestroy {
     const updatedBill: Bill = { ...this.editingBill, dueDate: formattedDueDate };
 
     this.billService.updateBill(this.editingBill.id, updatedBill).subscribe(() => {
-      const index = this.bills.findIndex((bill) => bill.id === this.editingBill?.id);
-      if (index !== -1) {
-        this.bills[index] = { ...updatedBill };
-        this.updateTotalAmount();
+      if (this.matchesCurrentFilters(updatedBill)) {
+        this.bills = this.bills
+          .map((bill) => (bill.id === updatedBill.id ? { ...updatedBill } : bill))
+          .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime());
+      } else {
+        this.bills = this.bills.filter((bill) => bill.id !== updatedBill.id);
       }
+
+      this.updateTotalAmount();
       this.closeEditModal();
     });
   }
 
+  private matchesCurrentFilters(bill: Bill): boolean {
+    if (!this.currentFilters) {
+      return true;
+    }
+
+    const { type, status, startDate, endDate } = this.currentFilters;
+
+    if (type && bill.type !== type) {
+      return false;
+    }
+
+    if (status && bill.status !== status) {
+      return false;
+    }
+
+    const dueDate = new Date(bill.dueDate);
+
+    if (startDate) {
+      const start = new Date(startDate);
+      if (!isNaN(start.getTime()) && dueDate < start) {
+        return false;
+      }
+    }
+
+    if (endDate) {
+      const end = new Date(endDate);
+      if (!isNaN(end.getTime()) && dueDate > end) {
+        return false;
+      }
+    }
+
+    return true;
+  }
   // Apre la modale e salva la bolletta selezionata
   openModal(bill: Bill): void {
     this.selectedBill = bill;
