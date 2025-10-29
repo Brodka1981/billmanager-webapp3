@@ -42,17 +42,17 @@
         <td class="actions-cell" style="padding:5px;">
           <button
             type="button"
-            class="btn btn-sm icon-btn"
-            [ngClass]="bill.status === 'Unpaid' ? 'btn-outline-primary' : 'btn-outline-primary'"
+            class="btn btn-sm"
+            [ngClass]="bill.status === 'Unpaid' ? 'btn-primary me-2 action-button' : 'btn-primary me-2 action-button'"
             (click)="toggleStatus(bill)"
             [attr.title]="bill.status === 'Unpaid' ? 'Segna come pagata' : 'Segna come non pagata'"
             [attr.aria-label]="bill.status === 'Unpaid' ? 'Segna come pagata' : 'Segna come non pagata'"
           >
-            <i-lucide [img]="bill.status === 'Unpaid' ? MarkUnpaidIcon : MarkPaidIcon"></i-lucide>
+            {{ bill.status == 'Unpaid' ? 'Imposta pagata' : 'Imposta non pagata' }}
           </button>
           <button
             type="button"
-            class="btn btn-sm btn-outline-warning icon-btn"
+            class="btn btn-sm btn-outline-warning icon-btn me-2"
             *ngIf="bill.id !== undefined"
             (click)="openEditModal(bill)"
             title="Modifica bolletta"
