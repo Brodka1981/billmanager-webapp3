@@ -39,15 +39,35 @@
             {{ bill.status == 'Paid' ? 'Pagato' : 'Non pagato' }}
           </span>
         </td>
-        <td>
-          <button class="btn btn-sm btn-primary me-2 action-button" (click)="toggleStatus(bill)">
-            {{ bill.status == 'Unpaid' ? 'Imposta pagata' : 'Imposta non pagata' }}
+        <td class="actions-cell" style="padding:5px;">
+          <button
+            type="button"
+            class="btn btn-sm icon-btn"
+            [ngClass]="bill.status === 'Unpaid' ? 'btn-outline-primary' : 'btn-outline-primary'"
+            (click)="toggleStatus(bill)"
+            [attr.title]="bill.status === 'Unpaid' ? 'Segna come pagata' : 'Segna come non pagata'"
+            [attr.aria-label]="bill.status === 'Unpaid' ? 'Segna come pagata' : 'Segna come non pagata'"
+          >
+            <i-lucide [img]="bill.status === 'Unpaid' ? MarkUnpaidIcon : MarkPaidIcon"></i-lucide>
           </button>
-          <button class="btn btn-sm btn-warning me-2" *ngIf="bill.id !== undefined" (click)="openEditModal(bill)">
-            Modifica
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-warning icon-btn"
+            *ngIf="bill.id !== undefined"
+            (click)="openEditModal(bill)"
+            title="Modifica bolletta"
+            aria-label="Modifica bolletta"
+          >
+            <i-lucide [img]="EditIcon"></i-lucide>
           </button>
-          <button class="btn btn-sm btn-danger" (click)="openModal(bill)">
-            Elimina
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger icon-btn"
+            (click)="openModal(bill)"
+            title="Elimina bolletta"
+            aria-label="Elimina bolletta"
+          >
+            <i-lucide [img]="DeleteIcon"></i-lucide>
           </button>
         </td>
       </tr>
