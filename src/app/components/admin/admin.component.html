@@ -20,7 +20,7 @@
         </td>
         <td>{{ property.address }}</td>
         <td>
-          <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property.id!)">
+          <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property)">
             Modifica
           </button>
           <button class="btn btn-sm btn-danger" (click)="openModal(property)">
@@ -33,7 +33,7 @@
 </div>
 
 <!-- Modale di conferma -->
-<div *ngIf="showModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+<div *ngIf="showDeleteModal" class="modal fade show d-block" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -50,6 +50,54 @@
         <button class="btn btn-danger" (click)="deleteProperty()">Elimina</button>
         <button class="btn btn-secondary" (click)="closeModal()">Annulla</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showDeleteModal || showPropertyModal" class="modal-backdrop fade show"></div>
+
+<!-- Modale per aggiunta/modifica proprietà -->
+<div *ngIf="showPropertyModal" class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ isEditMode ? 'Modifica Proprietà' : 'Aggiungi Proprietà' }}</h5>
+      </div>
+      <form (ngSubmit)="saveProperty()" novalidate>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="propertyName" class="form-label">Nome</label>
+            <input
+              id="propertyName"
+              type="text"
+              class="form-control"
+              [(ngModel)]="propertyForm.name"
+              name="propertyName"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="propertyAddress" class="form-label">Indirizzo</label>
+            <input
+              id="propertyAddress"
+              type="text"
+              class="form-control"
+              [(ngModel)]="propertyForm.address"
+              name="propertyAddress"
+              required
+            />
+          </div>
+          <div *ngIf="propertyModalError" class="alert alert-danger">
+            {{ propertyModalError }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" [disabled]="!propertyForm.name || !propertyForm.address">
+            {{ isEditMode ? 'Aggiorna' : 'Aggiungi' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="closePropertyModal()">Annulla</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
