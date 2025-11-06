@@ -118,6 +118,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       error: (error) => this.errorHandler.handleHttpError(error)
     });
   }
+
+  get isVehicleProperty(): boolean {
+    return this.propertyAssetType === 'Vehicle';
+  }
+
+  get billPluralLabel(): string {
+    return this.isVehicleProperty ? 'Spese' : 'Bollette';
+  }
+
+  get billSingularLabel(): string {
+    return this.isVehicleProperty ? 'Spesa' : 'Bolletta';
+  }
+
   private loadBillTypes(assetType: AssetType): void {
     this.billService.getBillTypes(assetType).subscribe({
       next: (types) => {

@@ -8,13 +8,13 @@
       <ul class="navbar-nav ms-auto">
         <!-- Elementi visibili solo se !isAdminRoute -->
         <li class="nav-item" *ngIf="!isAdminRoute">
-          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page">Bollette Imminenti</a>
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page">{{ billPluralLabel }} Imminenti</a>
         </li>
         <li class="nav-item" *ngIf="!isAdminRoute">
-          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page">Bollette Scadute</a>
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page">{{ billPluralLabel }} Scadute</a>
         </li>
         <li class="nav-item" *ngIf="!isAdminRoute">
-          <a class="nav-link force-pointer" routerLinkActive="active" (click)="openAddBillModal($event)">Aggiungi Bolletta</a>
+          <a class="nav-link force-pointer" routerLinkActive="active" (click)="openAddBillModal($event)">Aggiungi {{ billSingularLabel }}</a>
         </li>
         <!-- Menu a scomparsa -->
         <li class="nav-item dropdown" *ngIf="!isLoginRoute">
@@ -49,7 +49,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content form-modal">
       <div class="modal-header">
-        <h5 class="modal-title">Aggiungi bolletta</h5>
+        <h5 class="modal-title">Aggiungi {{ billSingularLabel | lowercase }}</h5>
       </div>
       <div class="modal-body">
         <form (ngSubmit)="saveNewBill()">

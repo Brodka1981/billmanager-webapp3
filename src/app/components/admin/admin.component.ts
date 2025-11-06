@@ -108,8 +108,6 @@ export class AdminComponent {
   }
 
   onAssetTypeChange(newType: AssetType): void {
-    console.log('hellooo')
-    //this.propertyForm.address = '';
     this.propertyForm.assetType = newType;
     if (newType === 'Vehicle') {
       if (this.propertyForm.address && this.propertyForm.address !== '-') {

@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
   billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
   billTypes: string[] = [];
   currentProperty?: Property;
-
+  currentPropertyAssetType: AssetType = 'RealEstate';
 
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
@@ -46,6 +46,7 @@ export class AppComponent implements OnInit {
         const childRoute = this.getChildRoute(this.route);
         childRoute.params.subscribe((params) => {
           this.currentPropertyId = params['propertyId'] ? +params['propertyId'] : null;
+          this.updateCurrentPropertyAssetType();
         });
         // Controlla se il percorso corrente contiene "admin"
         this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('settings');
@@ -141,6 +142,7 @@ export class AppComponent implements OnInit {
       next: (property) => {
         this.currentProperty = property;
         const assetType: AssetType = property.assetType ?? 'RealEstate';
+        this.currentPropertyAssetType = assetType;
         this.billService.getBillTypes(assetType).subscribe({
           next: (types) => {
             this.billTypes = types;
@@ -164,5 +166,40 @@ export class AppComponent implements OnInit {
         this.errorHandler.handleHttpError(error);
       }
     });
+  }
+
+  private updateCurrentPropertyAssetType(): void {
+    if (!this.currentPropertyId) {
+      this.currentProperty = undefined;
+      this.currentPropertyAssetType = 'RealEstate';
+      return;
+    }
+
+    const token = this.authService.getToken();
+    if (!token) {
+      this.currentProperty = undefined;
+      this.currentPropertyAssetType = 'RealEstate';
+      return;
+    }
+
+    this.adminService.getPropertyById(token, this.currentPropertyId).subscribe({
+      next: (property) => {
+        this.currentProperty = property;
+        this.currentPropertyAssetType = property.assetType ?? 'RealEstate';
+      },
+      error: (error) => this.errorHandler.handleHttpError(error)
+    });
+  }
+
+  get isVehicleProperty(): boolean {
+    return this.currentPropertyAssetType === 'Vehicle';
+  }
+
+  get billPluralLabel(): string {
+    return this.isVehicleProperty ? 'Spese' : 'Bollette';
+  }
+
+  get billSingularLabel(): string {
+    return this.isVehicleProperty ? 'Spesa' : 'Bolletta';
   }
 }
