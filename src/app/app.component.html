@@ -56,8 +56,8 @@
           <div class="mb-3">
             <label for="globalAddType" class="form-label">Tipo</label>
             <select id="globalAddType" class="form-select" [(ngModel)]="newBill.type" name="globalAddType" required>
-              <option value="" disabled>Seleziona un tipo</option>
-              <option *ngFor="let type of billTypes" [ngValue]="type">{{ billTypeLabels[type] }}</option>
+              <option value="" disabled [selected]="!newBill.type">Seleziona un tipo</option>
+              <option *ngFor="let type of billTypes" [ngValue]="type">{{ billTypeLabels[type] || type }}</option>
             </select>
           </div>
           <div class="mb-3">

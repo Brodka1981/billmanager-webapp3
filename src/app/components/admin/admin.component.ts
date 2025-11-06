@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Property } from '../../services/bill.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { FormsModule } from '@angular/forms';
+import { ASSET_TYPE_LABELS, ASSET_TYPE_OPTIONS, AssetType } from '../../shared/asset-types';
 
 @Component({
   selector: 'app-admin',
@@ -25,10 +26,14 @@ export class AdminComponent {
   selectedProperty: Property | null = null; // Proprietà selezionata per eliminazione
   propertyForm: Property = {
     name: '',
-    address: ''
+    address: '',
+    assetType: 'RealEstate'
   };
   isEditMode: boolean = false;
   propertyModalError: string | null = null;
+  assetTypeOptions: AssetType[] = ASSET_TYPE_OPTIONS;
+  assetTypeLabels = ASSET_TYPE_LABELS;
+  private lastRealEstateAddress: string = '';
 
   constructor(private adminService: AdminService, private authService: AuthService, private router: Router,private errorHandler: ErrorHandlerService) {}
 
@@ -69,8 +74,10 @@ export class AdminComponent {
     this.propertyForm = {
       name: '',
       address: '',
-      userid: this.userId ?? undefined
+      userid: this.userId ?? undefined,
+      assetType: 'RealEstate'
     };
+    this.lastRealEstateAddress = '';
     this.propertyModalError = null;
     this.showPropertyModal = true;
   }
@@ -82,6 +89,9 @@ export class AdminComponent {
     if (!this.propertyForm.userid && this.userId) {
       this.propertyForm.userid = this.userId;
     }
+    if (!this.propertyForm.assetType) {
+      this.propertyForm.assetType = 'RealEstate';
+    }
     this.propertyModalError = null;
     this.showPropertyModal = true;
   }
@@ -91,12 +101,32 @@ export class AdminComponent {
     this.propertyModalError = null;
     this.propertyForm = {
       name: '',
-      address: ''
+      address: '',
+      assetType: 'RealEstate'
     };
+    this.lastRealEstateAddress = '';
+  }
+
+  onAssetTypeChange(newType: AssetType): void {
+    console.log('hellooo')
+    //this.propertyForm.address = '';
+    this.propertyForm.assetType = newType;
+    if (newType === 'Vehicle') {
+      if (this.propertyForm.address && this.propertyForm.address !== '-') {
+        this.lastRealEstateAddress = this.propertyForm.address;
+      }
+      this.propertyForm.address = '-';
+    } else if (this.propertyForm.address === '-') {
+      this.propertyForm.address = this.lastRealEstateAddress || '';
+    }
+  }
+
+  shouldDisableAddress(): boolean {
+    return this.propertyForm.assetType === 'Vehicle';
   }
 
   saveProperty(): void {
-    if (!this.propertyForm.name || !this.propertyForm.address) {
+    if (!this.propertyForm.name || !this.propertyForm.address || (!this.isEditMode && !this.propertyForm.assetType)) {
       this.propertyModalError = 'Compila tutti i campi obbligatori.';
       return;
     }

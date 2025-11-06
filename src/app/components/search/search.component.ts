@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
@@ -10,12 +10,12 @@ import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent {
+export class SearchComponent implements OnChanges {
   @Output() search = new EventEmitter<any>(); // Emittente per notificare la ricerca al parent
 
   // Tipi e stati possibili
-  billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
-  billTypes = BILL_TYPES;
+  @Input() billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
+  @Input() billTypes: string[] = [];
   billStatuses = ['Paid', 'Unpaid'];
   // Anno corrente
   currentYear = new Date().getFullYear();
@@ -33,6 +33,12 @@ export class SearchComponent {
     Paid: 'Pagato',
     Unpaid: 'Non pagato'
   };
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['billTypes'] && !this.billTypes.includes(this.filters.type)) {
+      this.filters.type = '';
+    }
+  }
 
   // Emette l'evento di ricerca
   onSearch() {

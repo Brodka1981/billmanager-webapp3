@@ -5,13 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
 import { Observable, Subscription } from 'rxjs';
-import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House } from 'lucide-angular';
+import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House, Car, ShieldCheck, ClipboardCheck, Wrench } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
-import { BILL_TYPE_LABELS, BILL_TYPES } from '../../shared/bill-type-labels';
+import { BILL_TYPE_LABELS, DEFAULT_BILL_TYPES_BY_ASSET } from '../../shared/bill-type-labels';
 import { FormsModule } from '@angular/forms';
 import { BillModalService } from '../../services/bill-modal.service';
+import { AssetType } from '../../shared/asset-types';
 
 interface BillFilters {
   type: string;
@@ -35,6 +36,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   readonly Recycle = Recycle;
   readonly Tractor = Tractor;
   readonly House = House;
+  readonly Car = Car;
+  readonly ShieldCheck = ShieldCheck;
+  readonly ClipboardCheck = ClipboardCheck;
+  readonly Wrench = Wrench;
 
   property: Property | undefined;
   bills: Bill[] = [];
@@ -52,7 +57,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private urlSubscription?: Subscription;
 
   billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
-  billTypes: string[] = BILL_TYPES;
+  billTypes: string[] = [];
+  propertyAssetType: AssetType = 'RealEstate';
 
   constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService,
     private billModalService: BillModalService
@@ -104,8 +110,29 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   getPropertyById(key: string, propertyId: number): void {
     this.adminService.getPropertyById(key, propertyId).subscribe({
-      next: (data) => (this.property = data),
+      next: (data) => {
+        this.property = data;
+        this.propertyAssetType = data.assetType ?? 'RealEstate';
+        this.loadBillTypes(this.propertyAssetType);
+      },
       error: (error) => this.errorHandler.handleHttpError(error)
+    });
+  }
+  private loadBillTypes(assetType: AssetType): void {
+    this.billService.getBillTypes(assetType).subscribe({
+      next: (types) => {
+        this.billTypes = types;
+        if (this.currentFilters?.type && !this.billTypes.includes(this.currentFilters.type)) {
+          this.currentFilters.type = '';
+        }
+      },
+      error: (error) => {
+        this.billTypes = DEFAULT_BILL_TYPES_BY_ASSET[assetType] ?? [];
+        if (this.currentFilters?.type && !this.billTypes.includes(this.currentFilters.type)) {
+          this.currentFilters.type = '';
+        }
+        this.errorHandler.handleHttpError(error);
+      }
     });
   }
 

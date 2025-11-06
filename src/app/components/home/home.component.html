@@ -1,4 +1,4 @@
-<app-search *ngIf="isSearchVisible" (search)="handleSearch($event)"></app-search>
+<app-search *ngIf="isSearchVisible" (search)="handleSearch($event)" [billTypes]="billTypes" [billTypeLabels]="billTypeLabels"></app-search>
 
 <div class="container my-4">
   <div class="d-flex align-items-center mb-4">
@@ -28,7 +28,11 @@
           <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
           <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
           <i-lucide [img]="House" class="text-violet" *ngIf="bill.type === 'SpeseCondominiali'"></i-lucide>
-          {{ billTypeLabels[bill.type] }}
+          <i-lucide [img]="Car" class="text-primary" *ngIf="bill.type === 'Bollo'"></i-lucide>
+          <i-lucide [img]="ShieldCheck" class="text-info" *ngIf="bill.type === 'Assicurazione'"></i-lucide>
+          <i-lucide [img]="ClipboardCheck" class="text-success" *ngIf="bill.type === 'Revisione'"></i-lucide>
+          <i-lucide [img]="Wrench" class="text-warning" *ngIf="bill.type === 'Tagliando'"></i-lucide>
+          {{ billTypeLabels[bill.type] || bill.type }}
         </td>
         <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}
           <span *ngIf="isBillExpired(bill)" class="badge bg-danger ms-1">Scaduta</span>
@@ -73,7 +77,7 @@
             <label for="editType" class="form-label">Tipo</label>
             <select id="editType" class="form-select" [(ngModel)]="editingBill.type" name="editType" required>
               <option value="" disabled>Seleziona un tipo</option>
-              <option *ngFor="let type of billTypes" [ngValue]="type">{{ billTypeLabels[type] }}</option>
+              <option *ngFor="let type of billTypes" [ngValue]="type">{{ billTypeLabels[type] || type }}</option>
             </select>
           </div>
           <div class="mb-3">

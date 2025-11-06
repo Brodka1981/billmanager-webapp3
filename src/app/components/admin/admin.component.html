@@ -8,6 +8,7 @@
       <tr>
         <th scope="col">Nome</th>
         <th scope="col">Indirizzo</th>
+        <th scope="col">Tipologia</th>
         <th scope="col">Azioni</th>
       </tr>
     </thead>
@@ -19,6 +20,7 @@
           </a>
         </td>
         <td>{{ property.address }}</td>
+        <td>{{ assetTypeLabels[property.assetType || 'RealEstate'] }}</td>
         <td>
           <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property)">
             Modifica
@@ -83,16 +85,42 @@
               type="text"
               class="form-control"
               [(ngModel)]="propertyForm.address"
+              [disabled]="shouldDisableAddress()"
               name="propertyAddress"
               required
             />
           </div>
+           <div class="mb-3" *ngIf="!isEditMode; else assetTypeReadonly">
+            <label for="propertyAssetType" class="form-label">Tipologia</label>
+            <select
+              id="propertyAssetType"
+              class="form-select"
+              [(ngModel)]="propertyForm.assetType"
+              name="propertyAssetType"
+              (ngModelChange)="onAssetTypeChange($event)"
+              required
+            >
+              <option *ngFor="let type of assetTypeOptions" [value]="type">{{ assetTypeLabels[type] }}</option>
+            </select>
+          </div>
+          <ng-template #assetTypeReadonly>
+            <div class="mb-3">
+              <label for="propertyAssetTypeReadonly" class="form-label">Tipo Asset</label>
+              <input
+                id="propertyAssetTypeReadonly"
+                type="text"
+                class="form-control"
+                [value]="assetTypeLabels[propertyForm.assetType || 'RealEstate']"
+                disabled
+              />
+            </div>
+          </ng-template>
           <div *ngIf="propertyModalError" class="alert alert-danger">
             {{ propertyModalError }}
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" [disabled]="!propertyForm.name || !propertyForm.address">
+          <button type="submit" class="btn btn-primary" [disabled]="!propertyForm.name || !propertyForm.address || (!isEditMode && !propertyForm.assetType)">
             {{ isEditMode ? 'Aggiorna' : 'Aggiungi' }}
           </button>
           <button type="button" class="btn btn-secondary" (click)="closePropertyModal()">Annulla</button>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { AssetType } from '../shared/asset-types';
 
 export interface Bill {
   id?: number;
@@ -9,7 +10,8 @@ export interface Bill {
   amount: number;
   dueDate: string;
   status: string;
-  propertyId: number
+  propertyId: number;
+  assetType?: AssetType;
 }
 
 export interface Property {
@@ -17,6 +19,7 @@ export interface Property {
   name: string;
   address: string;
   userid?: number;
+  assetType?: AssetType;
 }
 
 @Injectable({
@@ -57,6 +60,15 @@ export class BillService {
 
   getExpiredBills(propertyId: number): Observable<Bill[]> {
     return this.http.get<Bill[]>(`${this.apiPropertiesUrl}/${propertyId}/Bills/Overdue`);
+  }
+
+  getBillTypes(assetType?: AssetType): Observable<string[]> {
+    let params = new HttpParams();
+    if (assetType) {
+      params = params.set('assetType', assetType);
+    }
+
+    return this.http.get<string[]>(`${this.apiUrl}/types`, { params });
   }
 
   // Elimina una bolletta

@@ -6,10 +6,11 @@ import { AuthService } from './services/auth.service';
 import { SettingsComponent } from "./components/settings/settings.component";
 import { BillModalService } from './services/bill-modal.service';
 import { FormsModule } from '@angular/forms';
-import { Bill } from './services/bill.service';
-import { BILL_TYPE_LABELS, BILL_TYPES } from './shared/bill-type-labels';
+import { Bill, BillService, Property } from './services/bill.service';
+import { BILL_TYPE_LABELS, DEFAULT_BILL_TYPES_BY_ASSET } from './shared/bill-type-labels';
 import { AdminService } from './services/admin.service';
 import { ErrorHandlerService } from './shared/error-handler.service';
+import { AssetType } from './shared/asset-types';
 
 @Component({
   standalone: true,
@@ -27,13 +28,15 @@ export class AppComponent implements OnInit {
   showAddBillModal = false;
   newBill: Bill | null = null;
   billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
-  billTypes: string[] = BILL_TYPES;
+  billTypes: string[] = [];
+  currentProperty?: Property;
 
 
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
     private billModalService: BillModalService,
     private adminService: AdminService,
+    private billService: BillService,
     private errorHandler: ErrorHandlerService) {}
 
   ngOnInit(): void {
@@ -72,6 +75,12 @@ export class AppComponent implements OnInit {
     event?.preventDefault();
     event?.stopPropagation();
 
+    const token = this.authService.getToken();
+    if (!token) {
+      this.router.navigate(['/login'], { queryParams: { error: 'Token mancante, accedi nuovamente.' } });
+      return;
+    }
+
     this.newBill = {
       type: '',
       amount: 0,
@@ -79,12 +88,14 @@ export class AppComponent implements OnInit {
       status: 'unpaid',
       propertyId: this.currentPropertyId
     };
-    this.showAddBillModal = true;
+    this.billTypes = [];
+    this.loadBillTypesForProperty(token, this.currentPropertyId);
   }
 
   closeAddBillModal(): void {
     this.showAddBillModal = false;
     this.newBill = null;
+    this.billTypes = [];
   }
 
   saveNewBill(): void {
@@ -122,6 +133,36 @@ export class AppComponent implements OnInit {
         this.closeAddBillModal();
       },
       error: (error) => this.errorHandler.handleHttpError(error)
+    });
+  }
+
+  private loadBillTypesForProperty(token: string, propertyId: number): void {
+    this.adminService.getPropertyById(token, propertyId).subscribe({
+      next: (property) => {
+        this.currentProperty = property;
+        const assetType: AssetType = property.assetType ?? 'RealEstate';
+        this.billService.getBillTypes(assetType).subscribe({
+          next: (types) => {
+            this.billTypes = types;
+            if (this.newBill) {
+              this.newBill.type = '';
+            }
+            this.showAddBillModal = true;
+          },
+          error: (error) => {
+            this.billTypes = DEFAULT_BILL_TYPES_BY_ASSET[assetType] ?? [];
+            if (this.newBill) {
+              this.newBill.type = '';
+            }
+            this.showAddBillModal = true;
+            this.errorHandler.handleHttpError(error);
+          }
+        });
+      },
+      error: (error) => {
+        this.newBill = null;
+        this.errorHandler.handleHttpError(error);
+      }
     });
   }
 }
