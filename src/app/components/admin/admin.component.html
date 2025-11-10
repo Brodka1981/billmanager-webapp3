@@ -20,7 +20,21 @@
           </a>
         </td>
         <td>{{ property.address }}</td>
-        <td>{{ assetTypeLabels[property.assetType || 'RealEstate'] }}</td>
+        <td>
+          <span
+            class="badge rounded-pill asset-type-badge"
+            [ngClass]="getAssetTypeBadgeClass(property.assetType)"
+            [attr.aria-label]="assetTypeLabels[resolveAssetType(property.assetType)]"
+            [attr.title]="assetTypeLabels[resolveAssetType(property.assetType)]"
+          >
+            <i-lucide
+              class="asset-type-icon"
+              [img]="assetTypeIconMap[resolveAssetType(property.assetType)]"
+              aria-hidden="true"
+            ></i-lucide>
+            {{ assetTypeLabels[resolveAssetType(property.assetType)] }}
+          </span>
+        </td>
         <td>
           <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property)">
             Modifica

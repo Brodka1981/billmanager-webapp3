@@ -7,11 +7,13 @@ import { Property } from '../../services/bill.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { FormsModule } from '@angular/forms';
 import { ASSET_TYPE_LABELS, ASSET_TYPE_OPTIONS, AssetType } from '../../shared/asset-types';
+import { Car, House, LucideAngularModule } from 'lucide-angular';
+import { LucideIconData } from 'lucide-angular/icons/types';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, LucideAngularModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
@@ -33,6 +35,10 @@ export class AdminComponent {
   propertyModalError: string | null = null;
   assetTypeOptions: AssetType[] = ASSET_TYPE_OPTIONS;
   assetTypeLabels = ASSET_TYPE_LABELS;
+  assetTypeIconMap: Record<AssetType, LucideIconData> = {
+    RealEstate: House,
+    Vehicle: Car
+  };
   private lastRealEstateAddress: string = '';
 
   constructor(private adminService: AdminService, private authService: AuthService, private router: Router,private errorHandler: ErrorHandlerService) {}
@@ -121,6 +127,20 @@ export class AdminComponent {
 
   shouldDisableAddress(): boolean {
     return this.propertyForm.assetType === 'Vehicle';
+  }
+
+  getAssetTypeBadgeClass(assetType?: AssetType): string {
+    switch (assetType) {
+      case 'Vehicle':
+        return 'text-body';
+      case 'RealEstate':
+      default:
+        return 'text-body';
+    }
+  }
+
+  resolveAssetType(assetType?: AssetType | null): AssetType {
+    return assetType ?? 'RealEstate';
   }
 
   saveProperty(): void {
