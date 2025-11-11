@@ -22,6 +22,14 @@ interface BillFilters {
   endDate: string;
 }
 
+interface BillTypeSummaryItem {
+  type: string;
+  label: string;
+  total: number;
+  percentage: number;
+  color: string;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -59,6 +67,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
   billTypes: string[] = [];
   propertyAssetType: AssetType = 'RealEstate';
+  billTypeSummary: BillTypeSummaryItem[] = [];
+  pieChartGradient = '';
+
+  private readonly billTypeColors: Record<string, string> = {
+    Luce: '#f59f00',
+    Gas: '#fa5252',
+    Acqua: '#228be6',
+    Tari: '#37b24d',
+    Bonifica: '#c17d44',
+    SpeseCondominiali: '#845ef7',
+    Bollo: '#3b5bdb',
+    Assicurazione: '#339af0',
+    Revisione: '#40c057',
+    Tagliando: '#fab005'
+  };
 
   constructor(private billService: BillService, private adminService: AdminService, private router: Router, private route: ActivatedRoute, private authService: AuthService,private errorHandler: ErrorHandlerService,
     private billModalService: BillModalService
@@ -231,6 +254,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Calcola il totale dell'importo
   updateTotalAmount(): void {
     this.totalAmount = this.bills.reduce((sum, bill) => sum + bill.amount, 0);
+    this.updateBillTypeSummary();
   }
 
   private handleBillCreated(createdBill: Bill): void {
@@ -362,5 +386,82 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   isBillExpired(bill: Bill): boolean {
     return new Date(bill.dueDate) < new Date() && bill.status !== 'Paid';
+  }
+  private updateBillTypeSummary(): void {
+    const totals = new Map<string, number>();
+
+    for (const bill of this.bills) {
+      const amount = bill.amount ?? 0;
+      if (amount <= 0) {
+        continue;
+      }
+
+      totals.set(bill.type, (totals.get(bill.type) ?? 0) + amount);
+    }
+
+    if (totals.size === 0) {
+      this.billTypeSummary = [];
+      this.pieChartGradient = this.getEmptyChartGradient();
+      return;
+    }
+
+    const overallTotal = Array.from(totals.values()).reduce((sum, current) => sum + current, 0);
+
+    this.billTypeSummary = Array.from(totals.entries())
+      .map(([type, total]) => {
+        const percentage = overallTotal > 0 ? (total / overallTotal) * 100 : 0;
+        const color = this.getBillTypeColor(type);
+        return {
+          type,
+          label: this.billTypeLabels[type] || type,
+          total,
+          percentage,
+          color
+        };
+      })
+      .sort((a, b) => b.total - a.total);
+
+    this.pieChartGradient = this.buildPieChartGradient(this.billTypeSummary);
+  }
+
+  private buildPieChartGradient(summary: BillTypeSummaryItem[]): string {
+    if (!summary.length) {
+      return this.getEmptyChartGradient();
+    }
+
+    let currentAngle = 0;
+    const segments: string[] = [];
+
+    summary.forEach((item, index) => {
+      const angle = (item.percentage / 100) * 360;
+      const start = currentAngle;
+      const end = index === summary.length - 1 ? 360 : currentAngle + angle;
+      segments.push(`${item.color} ${start}deg ${end}deg`);
+      currentAngle = end;
+    });
+
+    return `conic-gradient(${segments.join(', ')})`;
+  }
+
+  private getBillTypeColor(type: string): string {
+    if (this.billTypeColors[type]) {
+      return this.billTypeColors[type];
+    }
+
+    return this.generateColorFromString(type);
+  }
+
+  private generateColorFromString(value: string): string {
+    let hash = 0;
+    for (let i = 0; i < value.length; i++) {
+      hash = value.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 70%, 55%)`;
+  }
+
+  private getEmptyChartGradient(): string {
+    return 'conic-gradient(#e9ecef 0deg 360deg)';
   }
 }
