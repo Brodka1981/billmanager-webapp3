@@ -58,6 +58,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   editingBill: Bill | null = null; // Bolletta selezionata per modifica
   propertyId!: number;
   isSearchVisible: boolean = true;
+  isPieChartVisible: boolean = true;
   titleSuffix: string = '';
   selectedYear: string = '';
   currentFilters: BillFilters | null = null;
@@ -107,8 +108,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.urlSubscription = this.route.url.subscribe((urlSegments) => {
           const isUpcoming = urlSegments.some(segment => segment.path === 'upcoming');
           const isExpired = urlSegments.some(segment => segment.path === 'expired');
-          // Mostriamo la ricerca solo nella vista "Tutte le bollette"
-          this.isSearchVisible = !(isUpcoming || isExpired);
+          // Mostriamo la ricerca e il grafo a torta solo nella vista "Tutte le bollette"
+          const showFullSummary = !(isUpcoming || isExpired);
+          this.isSearchVisible = showFullSummary;
+          this.isPieChartVisible = showFullSummary;
 
           if (isUpcoming) {
             this.titleSuffix = 'Imminenti';

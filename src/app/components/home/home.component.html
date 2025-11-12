@@ -64,7 +64,7 @@
     </tbody>
   </table>
 </div>
-<div class="container mb-5">
+<div class="container mb-5" *ngIf="isPieChartVisible">
   <div class="chart-container" *ngIf="billTypeSummary.length; else emptyChart">
     <h2 class="chart-title">Ripartizione della spesa per tipologia</h2>
     <div class="chart-content">

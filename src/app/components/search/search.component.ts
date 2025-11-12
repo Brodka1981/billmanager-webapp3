@@ -45,6 +45,14 @@ export class SearchComponent implements OnChanges {
     this.search.emit(this.filters);
   }
 
+  onTypeChange() {
+    this.onSearch();
+  }
+
+  onStatusChange() {
+    this.onSearch();
+  }
+
   onYearChange() {
     if (this.filters.year !== '') {
       const selectedYear = Number(this.filters.year);
@@ -62,6 +70,8 @@ export class SearchComponent implements OnChanges {
       this.filters.startDate = '';
       this.filters.endDate = '';
     }
+
+    this.onSearch();
   }
 
   onReset() {

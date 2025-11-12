@@ -3,7 +3,7 @@
     <!-- Dropdown per Tipo -->
     <div class="col-md-2">
       <label for="type" class="form-label">Tipo</label>
-      <select id="type" class="form-select" [(ngModel)]="filters.type" name="type">
+      <select id="type" class="form-select" [(ngModel)]="filters.type" name="type" (ngModelChange)="onTypeChange()">
         <option value="" selected>Tutti</option>
         <option *ngFor="let type of billTypes" [value]="type">{{ billTypeLabels[type] || type }}</option>
       </select>
@@ -12,7 +12,7 @@
     <!-- Dropdown per Stato -->
     <div class="col-md-2">
       <label for="status" class="form-label">Stato pagamento</label>
-      <select id="status" class="form-select" [(ngModel)]="filters.status" name="status">
+      <select id="status" class="form-select" [(ngModel)]="filters.status" name="status" (ngModelChange)="onStatusChange()">
         <option value="" selected>Tutti</option>
         <option *ngFor="let status of billStatuses" [value]="status">{{ statusMapping[status] }}</option>
       </select>
