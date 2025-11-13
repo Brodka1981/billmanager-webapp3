@@ -1,0 +1,169 @@
+.statistics-container {
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  color: #6b7280;
+}
+
+.filters {
+  min-width: 200px;
+}
+
+.chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.chart-area {
+  overflow-x: auto;
+  padding: 0.75rem 0;
+}
+
+.chart-columns {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(40px, 1fr));
+  gap: 1rem;
+  min-width: 640px;
+  align-items: stretch;
+}
+
+.chart-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 0.1rem 0.85rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.1rem;
+  justify-content: center;
+  width: 100%;
+  min-height: 320px;
+}
+
+.bar {
+  position: relative;
+  width: 10px;
+  border-radius: 6px 6px 0 0;
+  background: #94a3b8;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bar:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
+}
+
+.bar .value {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translate(-50%, -6px);
+  background: rgba(15, 23, 42, 0.85);
+  color: #fff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 0.7rem;
+}
+
+.month-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.legend-item .color {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.legend-item .label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.legend-item .total {
+  margin-left: auto;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.loading,
+.empty-state {
+  text-align: center;
+  padding: 2rem 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .statistics-container {
+    padding: 1rem;
+  }
+
+  .chart-columns {
+    gap: 0.75rem;
+    min-width: 720px;
+  }
+
+  .chart-column {
+    padding: 0.75rem 0.5rem 0.75rem;
+  }
+
+  .bar {
+    width: 8px;
+  }
+}

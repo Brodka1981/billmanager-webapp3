@@ -8,6 +8,9 @@
       <ul class="navbar-nav ms-auto">
         <!-- Elementi visibili solo se !isAdminRoute -->
         <li class="nav-item" *ngIf="!isAdminRoute">
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'statistics']" routerLinkActive="active" aria-current="page">Statistiche Annuali</a>
+        </li>
+        <li class="nav-item" *ngIf="!isAdminRoute">
           <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page">{{ billPluralLabel }} Imminenti</a>
         </li>
         <li class="nav-item" *ngIf="!isAdminRoute">

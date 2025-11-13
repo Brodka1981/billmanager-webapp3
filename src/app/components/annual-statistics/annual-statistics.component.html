@@ -1,0 +1,58 @@
+<div class="container my-4 statistics-container" *ngIf="propertyId">
+  <div class="header">
+    <div>
+      <h2>Statistiche Annuali</h2>
+      <p class="subtitle" *ngIf="property">{{ property.name }} &mdash; {{ property.address }}</p>
+      <p class="subtitle" *ngIf="!property">Proprietà #{{ propertyId }}</p>
+    </div>
+    <div class="filters">
+      <label for="yearSelect" class="form-label">Anno</label>
+      <select id="yearSelect" class="form-select" [(ngModel)]="selectedYear" (change)="onYearChange()">
+        <option *ngFor="let year of availableYears" [ngValue]="year">{{ year }}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="chart-wrapper" *ngIf="!isLoading; else loading">
+    <div class="chart" *ngIf="hasDataForYear; else noData">
+      <div class="chart-area">
+        <div class="chart-columns">
+          <div class="chart-column" *ngFor="let month of monthlyStatistics; let index = index">
+            <div class="bars">
+              <ng-container *ngFor="let type of billTypesForYear">
+                <div
+                  class="bar"
+                  [style.height.px]="getBarHeight(month.totals[type] ?? 0)"
+                  [style.background]="getColorForType(type)"
+                  [attr.title]="billTypeLabels[type] || type"
+                >
+                  <span class="value" *ngIf="month.totals[type]">{{ getFormattedAmount(month.totals[type]) }}</span>
+                </div>
+              </ng-container>
+            </div>
+            <div class="month-label">{{ monthNames[index] }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="legend" *ngIf="billTypesForYear.length">
+        <div class="legend-item" *ngFor="let type of billTypesForYear">
+          <span class="color" [style.background]="getColorForType(type)"></span>
+          <span class="label">{{ billTypeLabels[type] || type }}</span>
+          <span class="total" *ngIf="totalByType[type]">{{ getFormattedAmount(totalByType[type]) }} €</span>
+          <span class="total" *ngIf="!totalByType[type]">0,00 €</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading">Caricamento in corso...</div>
+</ng-template>
+
+<ng-template #noData>
+  <div class="empty-state">
+    <p>Nessun dato disponibile per l'anno selezionato.</p>
+    <p>Aggiungi nuove {{ billPluralLabel.toLowerCase() }} per visualizzare le statistiche.</p>
+  </div>
+</ng-template>
