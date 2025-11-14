@@ -145,6 +145,14 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
     return safeAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  getBarHoverLabel(type: string, amount: number | undefined): string {
+    const label = this.billTypeLabels[type] ?? type;
+    if (amount === undefined) {
+      return label;
+    }
+    return `${label}: ${this.getFormattedAmount(amount)}`;
+  }
+
   private initAvailableYears(): void {
     const currentYear = new Date().getFullYear();
     this.availableYears = Array.from({ length: 6 }, (_, index) => currentYear - index);

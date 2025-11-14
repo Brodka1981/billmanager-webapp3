@@ -51,9 +51,9 @@
                     class="bar"
                     [style.height.px]="getBarHeight(month.totals[type] ?? 0)"
                     [style.background]="getColorForType(type)"
-                    [attr.title]="billTypeLabels[type] || type"
+                    [attr.title]="getBarHoverLabel(type, month.totals[type])"
                   >
-                    <span class="value" *ngIf="month.totals[type]">{{ getFormattedAmount(month.totals[type]) }}</span>
+                    <span class="value" *ngIf="month.totals[type] !== undefined">{{ getBarHoverLabel(type, month.totals[type]) }}</span>
                   </div>
                 </ng-container>
               </div>

@@ -76,7 +76,7 @@
 }
 
 .chart-area {
-  overflow-x: auto;
+  /*overflow-x: auto;*/
   padding: 0.75rem 0;
 }
 
@@ -121,11 +121,13 @@
   border-radius: 6px 6px 0 0;
   background: #94a3b8;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  z-index: 0;
 }
 
 .bar:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
+  z-index: 10;
 }
 
 .bar .value {
@@ -138,7 +140,14 @@
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   white-space: nowrap;
-  font-size: 0.7rem;
+  font-size: 0.9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.bar:hover .value {
+  opacity: 1;
 }
 
 .chart-columns.stacked .chart-column {
