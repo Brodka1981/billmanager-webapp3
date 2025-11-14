@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AdminService } from '../../services/admin.service';
 import { Bill, BillService, Property } from '../../services/bill.service';
@@ -10,15 +10,18 @@ import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { BILL_TYPE_LABELS, DEFAULT_BILL_TYPES_BY_ASSET } from '../../shared/bill-type-labels';
 import { AssetType } from '../../shared/asset-types';
 
+type ChartView = 'grouped' | 'stacked';
+
 interface MonthlyStatistics {
   monthIndex: number;
   totals: Partial<Record<string, number>>;
+  total: number;
 }
 
 @Component({
   selector: 'app-annual-statistics',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './annual-statistics.component.html',
   styleUrl: './annual-statistics.component.css'
 })
@@ -36,10 +39,13 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
   monthlyStatistics: MonthlyStatistics[] = [];
   totalByType: Record<string, number> = {};
   maxAmountForChart = 0;
-  private readonly chartHeightPx = 320;
+  maxStackedAmount = 0;
+  private readonly chartHeightPx = 420;
   hasDataForYear = false;
 
   isLoading = false;
+
+  chartView: ChartView = 'stacked';
 
   private routeSubscription?: Subscription;
 
@@ -108,6 +114,10 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
     this.loadStatisticsForYear(this.selectedYear);
   }
 
+  setChartView(view: ChartView): void {
+    this.chartView = view;
+  }
+
   getColorForType(type: string): string {
     return this.billTypeColors[type] ?? '#495057';
   }
@@ -117,6 +127,17 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
       return 0;
     }
     return Math.round((amount / this.maxAmountForChart) * this.chartHeightPx);
+  }
+
+  getStackedSegmentHeight(month: MonthlyStatistics, type: string): number {
+    if (!this.maxStackedAmount) {
+      return 0;
+    }
+    const amount = Number(month.totals[type] ?? 0);
+    if (!amount) {
+      return 0;
+    }
+    return Math.round((amount / this.maxStackedAmount) * this.chartHeightPx);
   }
 
   getFormattedAmount(amount: number | undefined): string {
@@ -154,6 +175,7 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
     this.monthlyStatistics = [];
     this.totalByType = {};
     this.maxAmountForChart = 0;
+    this.maxStackedAmount = 0;
     this.hasDataForYear = false;
     this.isLoading = true;
     const startDate = `${year}-01-01`;
@@ -174,7 +196,8 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
   private processBillsForStatistics(bills: Bill[], year: number): void {
     const monthlyTotals: MonthlyStatistics[] = Array.from({ length: 12 }, (_, index) => ({
       monthIndex: index,
-      totals: {}
+      totals: {},
+      total: 0
     }));
 
     const totalsByType: Record<string, number> = {};
@@ -199,13 +222,16 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
 
       const currentAmount = monthlyTotals[monthIndex].totals[bill.type] ?? 0;
       monthlyTotals[monthIndex].totals[bill.type] = currentAmount + amount;
+      monthlyTotals[monthIndex].total += amount;
 
       totalsByType[bill.type] = (totalsByType[bill.type] ?? 0) + amount;
       encounteredTypes.add(bill.type);
     });
 
-    this.maxAmountForChart = this.calculateMaxAmount(monthlyTotals);
-    this.hasDataForYear = this.maxAmountForChart > 0;
+    const { grouped, stacked } = this.calculateMaxAmounts(monthlyTotals);
+    this.maxAmountForChart = grouped;
+    this.maxStackedAmount = stacked;
+    this.hasDataForYear = Math.max(grouped, stacked) > 0;
 
     if (!this.hasDataForYear && encounteredTypes.size === 0 && this.propertyAssetType) {
       const fallbackTypes = DEFAULT_BILL_TYPES_BY_ASSET[this.propertyAssetType] ?? [];
@@ -217,16 +243,27 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
     this.totalByType = totalsByType;
   }
 
-  private calculateMaxAmount(monthlyTotals: MonthlyStatistics[]): number {
-    let maxValue = 0;
+private calculateMaxAmounts(monthlyTotals: MonthlyStatistics[]): { grouped: number; stacked: number } {
+    let maxSingleValue = 0;
+    let maxStackedValue = 0;
+
     monthlyTotals.forEach((month) => {
+      let monthTotal = 0;
       Object.values(month.totals).forEach((value) => {
         const amount = value ?? 0;
-        if (amount > maxValue) {
-          maxValue = amount;
+        if (amount > maxSingleValue) {
+          maxSingleValue = amount;
         }
+        monthTotal += amount;
       });
+      if (monthTotal > maxStackedValue) {
+        maxStackedValue = monthTotal;
+      }
     });
-    return maxValue;
+    return { grouped: maxSingleValue, stacked: maxStackedValue };
+  }
+
+  getMonthTotal(month: MonthlyStatistics): string {
+    return this.getFormattedAmount(month.total);
   }
 }

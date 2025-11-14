@@ -1,7 +1,10 @@
-<div class="container my-4 statistics-container" *ngIf="propertyId">
+<div class="container my-4" *ngIf="propertyId">
+  <a [routerLink]="['/properties', property?.id]" class="me-3 btn btn-link">
+      ← tutte le {{ billPluralLabel | lowercase }}
+  </a>
   <div class="header">
     <div>
-      <h2>Statistiche Annuali</h2>
+      <h2>Spese Annuali</h2>
       <p class="subtitle" *ngIf="property">{{ property.name }} &mdash; {{ property.address }}</p>
       <p class="subtitle" *ngIf="!property">Proprietà #{{ propertyId }}</p>
     </div>
@@ -15,24 +18,67 @@
 
   <div class="chart-wrapper" *ngIf="!isLoading; else loading">
     <div class="chart" *ngIf="hasDataForYear; else noData">
-      <div class="chart-area">
-        <div class="chart-columns">
-          <div class="chart-column" *ngFor="let month of monthlyStatistics; let index = index">
-            <div class="bars">
-              <ng-container *ngFor="let type of billTypesForYear">
-                <div
-                  class="bar"
-                  [style.height.px]="getBarHeight(month.totals[type] ?? 0)"
-                  [style.background]="getColorForType(type)"
-                  [attr.title]="billTypeLabels[type] || type"
-                >
-                  <span class="value" *ngIf="month.totals[type]">{{ getFormattedAmount(month.totals[type]) }}</span>
-                </div>
-              </ng-container>
-            </div>
-            <div class="month-label">{{ monthNames[index] }}</div>
-          </div>
+      <div class="chart-toolbar">
+        <div class="view-toggle" role="group" aria-label="Selettore tipo grafico">
+          <button
+            type="button"
+            class="toggle-button"
+            [class.active]="chartView === 'stacked'"
+            [attr.aria-pressed]="chartView === 'stacked'"
+            (click)="setChartView('stacked')"
+          >
+            Grafico a pila
+          </button>
+          <button
+            type="button"
+            class="toggle-button"
+            [class.active]="chartView === 'grouped'"
+            [attr.aria-pressed]="chartView === 'grouped'"
+            (click)="setChartView('grouped')"
+          >
+            Grafico a barre
+          </button>
         </div>
+      </div>
+      <div class="chart-area">
+        <ng-container [ngSwitch]="chartView">
+          <div class="chart-columns" *ngSwitchCase="'grouped'">
+            <div class="chart-column" *ngFor="let month of monthlyStatistics; let index = index">
+              <div class="month-total">{{ getMonthTotal(month) }} €</div>
+              <div class="bars">
+                <ng-container *ngFor="let type of billTypesForYear">
+                  <div
+                    class="bar"
+                    [style.height.px]="getBarHeight(month.totals[type] ?? 0)"
+                    [style.background]="getColorForType(type)"
+                    [attr.title]="billTypeLabels[type] || type"
+                  >
+                    <span class="value" *ngIf="month.totals[type]">{{ getFormattedAmount(month.totals[type]) }}</span>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="month-label">{{ monthNames[index] }}</div>
+            </div>
+          </div>
+          <div class="chart-columns stacked" *ngSwitchCase="'stacked'">
+            <div class="chart-column" *ngFor="let month of monthlyStatistics; let index = index">
+              <div class="month-total">{{ getMonthTotal(month) }} €</div>
+              <div class="stacked-bars">
+                <ng-container *ngFor="let type of billTypesForYear">
+                  <div
+                    class="stacked-segment"
+                    [style.height.px]="getStackedSegmentHeight(month, type)"
+                    [style.background]="getColorForType(type)"
+                    [attr.title]="billTypeLabels[type] || type"
+                  >
+                    <span class="value" *ngIf="month.totals[type]">{{ getFormattedAmount(month.totals[type]) }}</span>
+                  </div>
+                </ng-container>
+              </div>
+              <div class="month-label">{{ monthNames[index] }}</div>
+            </div>
+          </div>
+        </ng-container>
       </div>
       <div class="legend" *ngIf="billTypesForYear.length">
         <div class="legend-item" *ngFor="let type of billTypesForYear">
