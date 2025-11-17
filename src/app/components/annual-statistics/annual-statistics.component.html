@@ -4,7 +4,7 @@
   </a>
   <div class="header">
     <div>
-      <h2>Spese Annuali</h2>
+      <h2>Statistiche Spese Annuali</h2>
       <p class="subtitle" *ngIf="property">{{ property.name }} &mdash; {{ property.address }}</p>
       <p class="subtitle" *ngIf="!property">Proprietà #{{ propertyId }}</p>
     </div>
@@ -66,12 +66,14 @@
               <div class="stacked-bars">
                 <ng-container *ngFor="let type of billTypesForYear">
                   <div
+                    *ngIf="month.totals[type]"
                     class="stacked-segment"
                     [style.height.px]="getStackedSegmentHeight(month, type)"
                     [style.background]="getColorForType(type)"
-                    [attr.title]="billTypeLabels[type] || type"
+                    [attr.data-tooltip]="billTypeLabels[type] || type"
+                    [attr.aria-label]="billTypeLabels[type] || type"
                   >
-                    <span class="value" *ngIf="month.totals[type]">{{ getFormattedAmount(month.totals[type]) }}</span>
+                    <span class="value">{{ getFormattedAmount(month.totals[type]) }}</span>
                   </div>
                 </ng-container>
               </div>
@@ -84,7 +86,7 @@
         <div class="legend-item" *ngFor="let type of billTypesForYear">
           <span class="color" [style.background]="getColorForType(type)"></span>
           <span class="label">{{ billTypeLabels[type] || type }}</span>
-          <span class="total" *ngIf="totalByType[type]">{{ getFormattedAmount(totalByType[type]) }} €</span>
+          <span class="total" *ngIf="totalByType[type]">{{ getFormattedAmount(totalByType[type],2) }} €</span>
           <span class="total" *ngIf="!totalByType[type]">0,00 €</span>
         </div>
       </div>

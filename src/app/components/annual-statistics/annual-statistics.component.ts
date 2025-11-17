@@ -140,9 +140,12 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
     return Math.round((amount / this.maxStackedAmount) * this.chartHeightPx);
   }
 
-  getFormattedAmount(amount: number | undefined): string {
+  getFormattedAmount(amount: number | undefined, fractionDigits = 0): string {
     const safeAmount = Number(amount ?? 0);
-    return safeAmount.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return safeAmount.toLocaleString('it-IT', {
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits
+    });
   }
 
   getBarHoverLabel(type: string, amount: number | undefined): string {
