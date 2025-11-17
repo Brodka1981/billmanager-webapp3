@@ -195,6 +195,10 @@ export class AppComponent implements OnInit {
     return this.currentPropertyAssetType === 'Vehicle';
   }
 
+  get isRealEstateProperty(): boolean {
+    return this.currentPropertyAssetType === 'RealEstate';
+  }
+
   get billPluralLabel(): string {
     return this.isVehicleProperty ? 'Spese' : 'Bollette';
   }
