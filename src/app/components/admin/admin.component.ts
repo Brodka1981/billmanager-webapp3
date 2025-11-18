@@ -3,7 +3,7 @@ import { AdminService } from '../../services/admin.service';
 import { CommonModule } from '@angular/common';
 import { AuthService, JwtClaim } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
-import { Property } from '../../services/bill.service';
+import { BillService, Property } from '../../services/bill.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { FormsModule } from '@angular/forms';
 import { ASSET_TYPE_LABELS, ASSET_TYPE_OPTIONS, AssetType } from '../../shared/asset-types';
@@ -40,8 +40,9 @@ export class AdminComponent {
     Vehicle: Car
   };
   private lastRealEstateAddress: string = '';
+  private expiredPropertyIds = new Set<number>();
 
-  constructor(private adminService: AdminService, private authService: AuthService, private router: Router,private errorHandler: ErrorHandlerService) {}
+  constructor(private adminService: AdminService, private authService: AuthService, private router: Router,private errorHandler: ErrorHandlerService, private billService: BillService) {}
 
   ngOnInit(): void {
     const key = this.authService.getToken();
@@ -55,7 +56,10 @@ export class AdminComponent {
 
   getProperties(key: string, idUser: number): void {
     this.adminService.getPropertiesByUserId(key, idUser).subscribe({
-      next: (data) => (this.properties = data),
+      next: (data) => {
+        this.properties = data;
+        this.refreshExpiredStatuses();
+      },
       error: (error) => this.errorHandler.handleHttpError(error)
     });
   }
@@ -201,5 +205,35 @@ export class AdminComponent {
         },
       });
     }
+  }
+
+  hasExpiredBills(property: Property): boolean {
+    return !!property.id && this.expiredPropertyIds.has(property.id);
+  }
+
+  shouldShowExpiredLegend(): boolean {
+    return this.expiredPropertyIds.size > 0;
+  }
+
+  private refreshExpiredStatuses(): void {
+    this.expiredPropertyIds.clear();
+    this.properties.forEach(property => {
+      if (property.id) {
+        this.updatePropertyExpiredStatus(property.id);
+      }
+    });
+  }
+
+  private updatePropertyExpiredStatus(propertyId: number): void {
+    this.billService.getExpiredBills(propertyId).subscribe({
+      next: (bills) => {
+        if (bills.length > 0) {
+          this.expiredPropertyIds.add(propertyId);
+        } else {
+          this.expiredPropertyIds.delete(propertyId);
+        }
+      },
+      error: (error) => this.errorHandler.handleHttpError(error)
+    });
   }
 }

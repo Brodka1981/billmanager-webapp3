@@ -3,7 +3,6 @@ import { HomeComponent } from './components/home/home.component';
 import { AdminComponent } from './components/admin/admin.component';
 import { LoginComponent } from './components/login/login.component';
 import { authGuard } from './guards/auth.guard';
-import { AddPropertyComponent } from './components/add-property/add-property.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AnnualStatisticsComponent } from './components/annual-statistics/annual-statistics.component';
 
@@ -16,7 +15,5 @@ export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
-  { path: 'admin/add-property', component: AddPropertyComponent, canActivate: [authGuard] },
-  { path: 'admin/edit-property/:id', component: AddPropertyComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' } // Rotta di fallback
 ];
