@@ -20,6 +20,18 @@ export class AdminService {
     return this.http.post<{ token: string }>(this.apiAdmin + '/login', loginData);
   }
 
+  requestPasswordReset(email: string): Observable<any> {
+    return this.http.post(`${this.apiAdmin}/request-password-reset`, { email });
+  }
+
+  validateResetToken(token: string): Observable<any> {
+    return this.http.get(`${this.apiAdmin}/validate-reset-token/${token}`);
+  }
+
+  resetPassword(payload: { token: string; newPassword: string }): Observable<any> {
+    return this.http.post(`${this.apiAdmin}/reset-password`, payload);
+  }
+
   getAdminData(token: string) {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get(this.apiAdmin + '/getData', { headers }).pipe(

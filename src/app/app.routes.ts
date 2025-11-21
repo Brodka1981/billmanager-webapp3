@@ -5,6 +5,8 @@ import { LoginComponent } from './components/login/login.component';
 import { authGuard } from './guards/auth.guard';
 import { RegisterComponent } from './components/register/register.component';
 import { AnnualStatisticsComponent } from './components/annual-statistics/annual-statistics.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'admin', pathMatch: 'full' }, // Route di default
@@ -14,6 +16,8 @@ export const routes: Routes = [
   { path: 'properties/:propertyId/expired', component: HomeComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' } // Rotta di fallback
 ];

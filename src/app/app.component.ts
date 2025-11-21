@@ -49,8 +49,8 @@ export class AppComponent implements OnInit {
           this.updateCurrentPropertyAssetType();
         });
         // Controlla se il percorso corrente contiene "admin"
-        this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('settings');
-        this.isLoginRoute = this.router.url.includes('login') || this.router.url.includes('register');
+        this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('settings') || this.router.url.includes('password');
+        this.isLoginRoute = this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('password');
         this.currentUrl = this.router.url; // Memorizza l'URL attuale
       });
   }
