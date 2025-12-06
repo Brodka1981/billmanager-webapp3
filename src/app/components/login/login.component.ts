@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
+import { PushNotificationService } from '../../services/push-notification.service';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private adminService: AdminService,
+    private pushService: PushNotificationService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -48,8 +50,15 @@ export class LoginComponent {
 
       // Invia la richiesta di login al backend
       this.adminService.login(loginData).subscribe({
-        next: response => {
+        next: async response => {
           this.authService.login(response.token); // Memorizza il token
+
+          try {
+            await this.pushService.registerDeviceToken(response.token);
+          } catch (err) {
+            console.warn("Registrazione notifiche fallita", err);
+          }
+
           this.router.navigate(['/admin']); // Reindirizza all'area admin
         },
         error: () => {

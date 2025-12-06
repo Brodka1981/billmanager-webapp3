@@ -7,6 +7,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { AnnualStatisticsComponent } from './components/annual-statistics/annual-statistics.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { TestPushComponent } from './components/test/testpush.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'admin', pathMatch: 'full' }, // Route di default
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'properties/:propertyId/expired', component: HomeComponent, canActivate: [authGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'test', component: TestPushComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
