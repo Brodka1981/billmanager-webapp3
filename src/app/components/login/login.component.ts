@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
 import { PushNotificationService } from '../../services/push-notification.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +17,7 @@ import { PushNotificationService } from '../../services/push-notification.servic
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string | null = null;
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +43,14 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.errorMessage = null;
+    this.isLoading = true;
+
     if (this.loginForm.valid) {
       const loginData = {
         email: this.loginForm.value.email,
@@ -57,12 +66,15 @@ export class LoginComponent {
             await this.pushService.registerDeviceToken(response.token);
           } catch (err) {
             console.warn("Registrazione notifiche fallita", err);
+          } finally {
+            this.isLoading = false;
           }
 
           this.router.navigate(['/admin']); // Reindirizza all'area admin
         },
         error: () => {
           this.errorMessage = 'Login fallito: email o password errati.'; // Gestione dell'errore
+          this.isLoading = false;
         }
       });
     }

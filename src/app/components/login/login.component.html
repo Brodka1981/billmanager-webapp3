@@ -1,5 +1,10 @@
 <div class="d-flex justify-content-center align-items-start vh-100 mt-5" style="padding-top: 7rem;">
-  <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
+  <div class="card p-4 shadow-lg position-relative" style="width: 100%; max-width: 400px;">
+    <div *ngIf="isLoading" class="spinner-overlay">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Caricamento...</span>
+      </div>
+    </div>
     <h2 class="text-center mb-4">Login</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
@@ -33,7 +38,10 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">Login</button>
+      <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || isLoading">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+        <span>{{ isLoading ? 'Accesso in corso...' : 'Login' }}</span>
+      </button>
     </form>
     <div *ngIf="errorMessage" class="alert alert-danger mt-3">
       {{ errorMessage }}

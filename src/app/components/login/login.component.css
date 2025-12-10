@@ -5,3 +5,14 @@ body {
 .card {
   border-radius: 8px; /* Bordo arrotondato */
 }
+
+.spinner-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: inherit;
+  z-index: 1;
+}
