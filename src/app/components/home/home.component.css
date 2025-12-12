@@ -278,6 +278,14 @@ tono meno saturo per fondo grigio
   border: 1px solid #e9ecef;
 }
 
+.bill-card__amount-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: 0.75rem;
+}
+
 .expired-card {
   border-left: 4px solid #dc3545;
 }

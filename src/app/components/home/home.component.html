@@ -139,9 +139,13 @@
               </div>
             </div>
           </div>
-          <div class="bill-card__amount">{{ bill.amount | currency:'EUR' }}</div>
+          <div class="bill-card__amount-row">
+            <div class="bill-card__amount">{{ bill.amount | currency:'EUR' }}</div>
+            <span class="bill-card__collapsed-hint">
+              Pagata · Tocca per i dettagli
+            </span>
+          </div>
         </div>
-        <div class="bill-card__collapsed-hint">Pagata · Tocca per i dettagli</div>
       </ng-template>
     </div>
 
