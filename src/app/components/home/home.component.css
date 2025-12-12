@@ -170,6 +170,117 @@ tono meno saturo per fondo grigio
   border-radius: 0.75rem;
   background-color: #f8f9fa;
 }
+.bills-table-wrapper {
+  overflow-x: auto;
+}
+
+.bill-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bill-card {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(33, 37, 41, 0.08);
+}
+
+.bill-card--collapsible {
+  cursor: pointer;
+}
+
+.bill-card--collapsed {
+  padding: 0.85rem 1rem;
+}
+
+.bill-card__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.bill-card__type {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.bill-card__icon i-lucide {
+  width: 24px;
+  height: 24px;
+}
+
+.bill-card__title {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.bill-card__meta {
+  display: flex;
+  flex-direction: column;
+  color: #6c757d;
+  margin-top: 0.35rem;
+  gap: 0.15rem;
+}
+
+.bill-card__meta-label {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.bill-card__amount {
+  font-weight: 700;
+  color: #212529;
+  white-space: nowrap;
+}
+
+.bill-card__status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem 0 0.25rem;
+}
+
+.bill-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.bill-card__collapsed-hint {
+  margin-top: 0.25rem;
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.bill-card__row--compact {
+  align-items: center;
+}
+
+.bill-card__actions .btn {
+  font-weight: 600;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.65rem;
+}
+
+.bill-card__actions .btn-outline-danger {
+  border-width: 2px;
+}
+
+.bill-card.bill-total {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border: 1px solid #e9ecef;
+}
+
+.expired-card {
+  border-left: 4px solid #dc3545;
+}
 
 @media (max-width: 768px) {
   .chart-content {
@@ -185,5 +296,18 @@ tono meno saturo per fondo grigio
     width: 110px;
     height: 110px;
     line-height: 110px;
+  }
+
+  .bill-card__row {
+    flex-direction: column;
+  }
+
+  .bill-card__amount {
+    align-self: flex-start;
+    font-size: 1.1rem;
+  }
+
+  .bill-card__status {
+    margin-top: 0.75rem;
   }
 }

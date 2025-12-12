@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   propertyAssetType: AssetType = 'RealEstate';
   billTypeSummary: BillTypeSummaryItem[] = [];
   pieChartGradient = '';
+  expandedPaidBillKeys = new Set<string>();
 
   private readonly billTypeColors: Record<string, string> = {
     Luce: '#f59f00',
@@ -289,6 +290,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.billService.updateBill(bill.id!, { status: newStatus }).subscribe(() => {
       // Aggiorna lo stato localmente dopo il successo della richiesta
       bill.status = newStatus;
+      if (newStatus === 'Paid') {
+        this.expandedPaidBillKeys.delete(this.getBillKey(bill));
+      }
     });
   }
 
@@ -390,6 +394,31 @@ export class HomeComponent implements OnInit, OnDestroy {
   isBillExpired(bill: Bill): boolean {
     return new Date(bill.dueDate) < new Date() && bill.status !== 'Paid';
   }
+    isPaidCollapsed(bill: Bill): boolean {
+    return bill.status === 'Paid' && !this.expandedPaidBillKeys.has(this.getBillKey(bill));
+  }
+
+  togglePaidCard(bill: Bill): void {
+    if (bill.status !== 'Paid') {
+      return;
+    }
+
+    const key = this.getBillKey(bill);
+    if (this.expandedPaidBillKeys.has(key)) {
+      this.expandedPaidBillKeys.delete(key);
+    } else {
+      this.expandedPaidBillKeys.add(key);
+    }
+  }
+
+  private getBillKey(bill: Bill): string {
+    if (bill.id !== undefined) {
+      return `id-${bill.id}`;
+    }
+
+    return `${bill.propertyId ?? 'na'}-${bill.type}-${bill.amount}-${bill.dueDate}`;
+  }
+
   private updateBillTypeSummary(): void {
     const totals = new Map<string, number>();
 

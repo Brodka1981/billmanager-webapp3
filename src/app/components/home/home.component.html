@@ -9,61 +9,151 @@
       {{ billPluralLabel }} {{ titleSuffix ? titleSuffix : '' }} <span>di {{ property?.name }}</span><span *ngIf="selectedYear"> {{ selectedYear }}</span>
     </h1>
   </div>
-  <table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Tipo</th>
-        <th scope="col">Data Scadenza</th>
-        <th scope="col">Importo</th>
-        <th scope="col">Stato</th>
-        <th scope="col">Azioni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let bill of bills" [ngClass]="{ 'expired-bill': isBillExpired(bill) }">
-        <td>
-          <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
-          <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
-          <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
-          <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
-          <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
-          <i-lucide [img]="House" class="text-violet" *ngIf="bill.type === 'SpeseCondominiali'"></i-lucide>
-          <i-lucide [img]="Car" class="text-primary" *ngIf="bill.type === 'Bollo'"></i-lucide>
-          <i-lucide [img]="ShieldCheck" class="text-info" *ngIf="bill.type === 'Assicurazione'"></i-lucide>
-          <i-lucide [img]="ClipboardCheck" class="text-success" *ngIf="bill.type === 'Revisione'"></i-lucide>
-          <i-lucide [img]="Wrench" class="text-warning" *ngIf="bill.type === 'Tagliando'"></i-lucide>
-          {{ billTypeLabels[bill.type] || bill.type }}
-        </td>
-        <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}
-          <span *ngIf="isBillExpired(bill)" class="badge bg-danger ms-1">Scaduta</span>
-        </td>
-        <td>{{ bill.amount | currency:'EUR' }}</td>
-        <td [style.width.px]="126">
-          <span [ngClass]="bill.status == 'Paid' ? 'text-success' : 'text-danger'">
-            {{ bill.status == 'Paid' ? 'Pagato' : 'Non pagato' }}
-          </span>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-primary me-2 action-button" (click)="toggleStatus(bill)">
-            {{ bill.status == 'Unpaid' ? 'Imposta pagata' : 'Imposta non pagata' }}
-          </button>
-          <button class="btn btn-sm btn-warning me-2" *ngIf="bill.id !== undefined" (click)="openEditModal(bill)">
-            Modifica
-          </button>
-          <button class="btn btn-sm btn-danger" (click)="openModal(bill)">
-            Elimina
-          </button>
-        </td>
-      </tr>
-      <!-- Totale -->
-      <tr>
-        <td colspan="2" class="text-end"><strong>Totale:</strong></td>
-        <td><strong>{{ totalAmount | currency:'EUR' }}</strong></td>
-        <td colspan="2"></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-responsive bills-table-wrapper d-none d-md-block">
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Tipo</th>
+          <th scope="col">Data Scadenza</th>
+          <th scope="col">Importo</th>
+          <th scope="col">Stato</th>
+          <th scope="col">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bill of bills" [ngClass]="{ 'expired-bill': isBillExpired(bill) }">
+          <td>
+            <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
+            <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
+            <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
+            <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
+            <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
+            <i-lucide [img]="House" class="text-violet" *ngIf="bill.type === 'SpeseCondominiali'"></i-lucide>
+            <i-lucide [img]="Car" class="text-primary" *ngIf="bill.type === 'Bollo'"></i-lucide>
+            <i-lucide [img]="ShieldCheck" class="text-info" *ngIf="bill.type === 'Assicurazione'"></i-lucide>
+            <i-lucide [img]="ClipboardCheck" class="text-success" *ngIf="bill.type === 'Revisione'"></i-lucide>
+            <i-lucide [img]="Wrench" class="text-warning" *ngIf="bill.type === 'Tagliando'"></i-lucide>
+            {{ billTypeLabels[bill.type] || bill.type }}
+          </td>
+          <td>{{ bill.dueDate | date:'dd MMMM yyyy' }}
+            <span *ngIf="isBillExpired(bill)" class="badge bg-danger ms-1">Scaduta</span>
+          </td>
+          <td>{{ bill.amount | currency:'EUR' }}</td>
+          <td [style.width.px]="126">
+            <span [ngClass]="bill.status == 'Paid' ? 'text-success' : 'text-danger'">
+              {{ bill.status == 'Paid' ? 'Pagato' : 'Non pagato' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-primary me-2 action-button" (click)="toggleStatus(bill)">
+              {{ bill.status == 'Unpaid' ? 'Imposta pagata' : 'Imposta non pagata' }}
+            </button>
+            <button class="btn btn-sm btn-warning me-2" *ngIf="bill.id !== undefined" (click)="openEditModal(bill)">
+              Modifica
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="openModal(bill)">
+              Elimina
+            </button>
+          </td>
+        </tr>
+        <!-- Totale -->
+        <tr>
+          <td colspan="2" class="text-end"><strong>Totale:</strong></td>
+          <td><strong>{{ totalAmount | currency:'EUR' }}</strong></td>
+          <td colspan="2"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bill-cards d-md-none">
+    <div class="bill-card" *ngFor="let bill of bills" [ngClass]="{ 'expired-card': isBillExpired(bill), 'bill-card--collapsible': bill.status === 'Paid', 'bill-card--collapsed': isPaidCollapsed(bill) }" (click)="bill.status === 'Paid' && togglePaidCard(bill)">
+      <ng-container *ngIf="!isPaidCollapsed(bill); else collapsedPaidCard">
+        <div class="bill-card__row">
+          <div class="bill-card__type">
+            <div class="bill-card__icon">
+              <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
+              <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
+              <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
+              <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
+              <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
+              <i-lucide [img]="House" class="text-violet" *ngIf="bill.type === 'SpeseCondominiali'"></i-lucide>
+              <i-lucide [img]="Car" class="text-primary" *ngIf="bill.type === 'Bollo'"></i-lucide>
+              <i-lucide [img]="ShieldCheck" class="text-info" *ngIf="bill.type === 'Assicurazione'"></i-lucide>
+              <i-lucide [img]="ClipboardCheck" class="text-success" *ngIf="bill.type === 'Revisione'"></i-lucide>
+              <i-lucide [img]="Wrench" class="text-warning" *ngIf="bill.type === 'Tagliando'"></i-lucide>
+            </div>
+            <div>
+              <div class="bill-card__title">{{ billTypeLabels[bill.type] || bill.type }}</div>
+              <div class="bill-card__meta">
+                <span class="bill-card__meta-label">Scadenza</span>
+                <span>
+                  {{ bill.dueDate | date:'dd MMMM yyyy' }}
+                  <span *ngIf="isBillExpired(bill)" class="badge bg-danger ms-1">Scaduta</span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="bill-card__amount">{{ bill.amount | currency:'EUR' }}</div>
+        </div>
+
+        <div class="bill-card__status">
+          <span class="bill-card__meta-label">Stato</span>
+            <span [ngClass]="bill.status == 'Paid' ? 'text-success' : 'text-danger'">
+              {{ bill.status == 'Paid' ? 'Pagato' : 'Non pagato' }}
+            </span>
+          </div>
+
+        <div class="bill-card__actions" (click)="$event.stopPropagation()">
+          <button class="btn btn-primary w-100" (click)="toggleStatus(bill)">
+            {{ bill.status == 'Unpaid' ? 'Segna come pagata' : 'Segna da pagare' }}
+            </button>
+            <button class="btn btn-warning w-100" *ngIf="bill.id !== undefined" (click)="openEditModal(bill)">
+              Modifica dettagli
+            </button>
+            <button class="btn btn-outline-danger w-100" (click)="openModal(bill)">
+              Elimina
+            </button>
+          </div>
+      </ng-container>
+
+      <ng-template #collapsedPaidCard>
+        <div class="bill-card__row bill-card__row--compact">
+          <div class="bill-card__type">
+            <div class="bill-card__icon">
+              <i-lucide [img]="Light" class="text-warning" *ngIf="bill.type === 'Luce'"></i-lucide>
+              <i-lucide [img]="Flame" class="text-danger" *ngIf="bill.type === 'Gas'"></i-lucide>
+              <i-lucide [img]="Drop" class="text-primary" *ngIf="bill.type === 'Acqua'"></i-lucide>
+              <i-lucide [img]="Recycle" class="text-green" *ngIf="bill.type === 'Tari'"></i-lucide>
+              <i-lucide [img]="Tractor" class="text-brown" *ngIf="bill.type === 'Bonifica'"></i-lucide>
+              <i-lucide [img]="House" class="text-violet" *ngIf="bill.type === 'SpeseCondominiali'"></i-lucide>
+              <i-lucide [img]="Car" class="text-primary" *ngIf="bill.type === 'Bollo'"></i-lucide>
+              <i-lucide [img]="ShieldCheck" class="text-info" *ngIf="bill.type === 'Assicurazione'"></i-lucide>
+              <i-lucide [img]="ClipboardCheck" class="text-success" *ngIf="bill.type === 'Revisione'"></i-lucide>
+              <i-lucide [img]="Wrench" class="text-warning" *ngIf="bill.type === 'Tagliando'"></i-lucide>
+            </div>
+            <div>
+              <div class="bill-card__title">{{ billTypeLabels[bill.type] || bill.type }}</div>
+              <div class="bill-card__meta">
+                <span>{{ bill.dueDate | date:'dd MMMM yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="bill-card__amount">{{ bill.amount | currency:'EUR' }}</div>
+        </div>
+        <div class="bill-card__collapsed-hint">Pagata · Tocca per i dettagli</div>
+      </ng-template>
+    </div>
+
+    <div class="bill-card bill-total" *ngIf="bills.length">
+      <div class="bill-card__row">
+        <div class="bill-card__title">Totale</div>
+        <div class="bill-card__amount">{{ totalAmount | currency:'EUR' }}</div>
+      </div>
+    </div>
+  </div>
 </div>
+
 <div class="container mb-5" *ngIf="isPieChartVisible">
   <div class="chart-container" *ngIf="billTypeSummary.length; else emptyChart">
     <h2 class="chart-title">Ripartizione della spesa per tipologia</h2>
