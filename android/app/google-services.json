@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "238326632978",
+    "project_id": "bill-manager-8c2ea",
+    "storage_bucket": "bill-manager-8c2ea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:238326632978:android:4dc86305d1261dda403ecb",
+        "android_client_info": {
+          "package_name": "org.duckdns.gestionebollette"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCar5eKTm9POQd7qSqSO3patlntwL4EZRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

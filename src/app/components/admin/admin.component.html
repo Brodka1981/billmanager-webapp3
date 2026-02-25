@@ -1,28 +1,76 @@
 <div class="container my-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="text-center">Proprietà di {{ userName }}</h1>
-    <button class="btn btn-primary" (click)="addProperty()">Aggiungi Proprietà</button>
+  <div class="admin-header">
+    <h1 class="text-center mb-0">Proprietà di {{ userName }}</h1>
+    <button class="btn btn-primary admin-add-btn" (click)="addProperty()">Aggiungi Proprietà</button>
   </div>
-  <table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">Nome</th>
-        <th scope="col">Indirizzo</th>
-        <th scope="col">Tipologia</th>
-        <th scope="col">Azioni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let property of properties" [ngClass]="{ 'expired-bill': hasExpiredBills(property) }">
-        <td>
-          <a [routerLink]="['/properties', property.id]">
+  <div class="d-none d-md-block">
+    <table class="table table-striped table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col">Indirizzo</th>
+          <th scope="col">Tipologia</th>
+          <th scope="col">Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let property of properties" [ngClass]="{ 'expired-bill': hasExpiredBills(property) }">
+          <td>
+            <a [routerLink]="['/properties', property.id]">
+              {{ property.name }}
+            </a>
+          </td>
+          <td>{{ property.address }}</td>
+          <td>
+            <span
+              class="badge rounded-pill asset-type-badge"
+              [ngClass]="getAssetTypeBadgeClass(property.assetType)"
+              [attr.aria-label]="assetTypeLabels[resolveAssetType(property.assetType)]"
+              [attr.title]="assetTypeLabels[resolveAssetType(property.assetType)]"
+            >
+              <i-lucide
+                class="asset-type-icon"
+                [img]="assetTypeIconMap[resolveAssetType(property.assetType)]"
+                aria-hidden="true"
+              ></i-lucide>
+              {{ assetTypeLabels[resolveAssetType(property.assetType)] }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property)">
+              Modifica
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="openModal(property)">
+              Elimina
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="properties-cards d-md-none">
+    <div
+      class="property-card property-card--clickable"
+      *ngFor="let property of properties"
+      [ngClass]="{ 'expired-card': hasExpiredBills(property) }"
+      role="link"
+      tabindex="0"
+      (click)="goToProperty(property.id)"
+      (keydown.enter)="goToProperty(property.id)"
+      (keydown.space)="goToProperty(property.id); $event.preventDefault()"
+    >
+      <div class="property-card__row">
+        <div class="property-card__info">
+          <div class="property-card__name">
             {{ property.name }}
-          </a>
-        </td>
-        <td>{{ property.address }}</td>
-        <td>
+          </div>
+          <div *ngIf="property.assetType == 'RealEstate'" class="property-card__address">{{ property.address }}</div>
+        </div>
+
+        <div class="property-card__right">
           <span
-            class="badge rounded-pill asset-type-badge"
+            class="badge rounded-pill asset-type-badge property-card__badge"
             [ngClass]="getAssetTypeBadgeClass(property.assetType)"
             [attr.aria-label]="assetTypeLabels[resolveAssetType(property.assetType)]"
             [attr.title]="assetTypeLabels[resolveAssetType(property.assetType)]"
@@ -34,18 +82,30 @@
             ></i-lucide>
             {{ assetTypeLabels[resolveAssetType(property.assetType)] }}
           </span>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-warning me-2" (click)="editProperty(property)">
+
+          <!-- ChevronRight -->
+          <i-lucide
+            class="property-card__chevron"
+            [img]="ChevronRight"
+            aria-hidden="true"
+          ></i-lucide>
+        </div>
+      </div>
+
+      <div class="property-card__actions">
+        <!-- tolto "Apri dettagli" -->
+
+        <div class="property-card__action-row" (click)="$event.stopPropagation()">
+          <button class="btn btn-warning flex-fill property-card__action-btn" (click)="editProperty(property)">
             Modifica
           </button>
-          <button class="btn btn-sm btn-danger" (click)="openModal(property)">
+          <button class="btn btn-outline-danger flex-fill property-card__action-btn" (click)="openModal(property)">
             Elimina
           </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        </div>
+      </div>
+    </div>
+  </div>
   <div *ngIf="shouldShowExpiredLegend()" class="properties-legend" aria-live="polite">
     <span class="legend-indicator" aria-hidden="true"></span>
     <span>Le proprietà con il bordo rosso a sinistra hanno bollette scadute.</span>

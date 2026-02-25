@@ -1,35 +1,77 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
     <a class="navbar-brand" [routerLink]="['/admin']">Gestione Bollette</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <button
+  class="navbar-toggler"
+  type="button"
+  aria-controls="navbarNav"
+  aria-expanded="false"
+  aria-label="Toggle navigation"
+  (click)="toggleNavbar()"
+>
+  <span class="navbar-toggler-icon"></span>
+</button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <!-- Elementi visibili solo se !isAdminRoute -->
         <li class="nav-item" *ngIf="!isAdminRoute  && isRealEstateProperty">
-          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'statistics']" routerLinkActive="active" aria-current="page">Statistiche Annuali</a>
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'statistics']" routerLinkActive="active" aria-current="page" (click)="closeNavbar()">Statistiche Annuali</a>
+        </li>
+        <li class="nav-item d-none d-lg-block" *ngIf="!isAdminRoute">
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page" (click)="closeNavbar()">{{ billPluralLabel }} Imminenti</a>
         </li>
         <li class="nav-item" *ngIf="!isAdminRoute">
-          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'upcoming']" routerLinkActive="active" aria-current="page">{{ billPluralLabel }} Imminenti</a>
+          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page" (click)="closeNavbar()">{{ billPluralLabel }} Scadute</a>
         </li>
-        <li class="nav-item" *ngIf="!isAdminRoute">
-          <a class="nav-link" [routerLink]="['/properties', currentPropertyId, 'expired']" routerLinkActive="active" aria-current="page">{{ billPluralLabel }} Scadute</a>
-        </li>
-        <li class="nav-item" *ngIf="!isAdminRoute">
+        <li class="nav-item d-none d-md-block" *ngIf="!isAdminRoute">
           <a class="nav-link force-pointer" routerLinkActive="active" (click)="openAddBillModal($event)">Aggiungi {{ billSingularLabel }}</a>
         </li>
-        <!-- Menu a scomparsa -->
-        <li class="nav-item dropdown" *ngIf="!isLoginRoute">
-          <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-gear"></i> <!-- Icona ingranaggio -->
+        <!-- Impostazioni / Esci: MOBILE come voci normali -->
+        <li class="nav-item d-md-none" *ngIf="!isLoginRoute">
+          <a
+            class="nav-link"
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#settingsModal"
+            (click)="closeNavbar()"
+          >
+            Impostazioni
           </a>
+        </li>
+
+        <li class="nav-item d-md-none" *ngIf="!isLoginRoute">
+          <a class="nav-link text-danger" href="#" (click)="logout()">
+            Esci
+          </a>
+        </li>
+        <!-- Impostazioni / Esci: DESKTOP nel dropdown -->
+        <li class="nav-item dropdown d-none d-md-block" *ngIf="!isLoginRoute">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="userMenu"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-gear"></i>
+          </a>
+
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">Impostazioni</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="#" (click)="logout()">Esci</a></li>
+            <li>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                Impostazioni
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item text-danger" href="#" (click)="logout()">
+                Esci
+              </a>
+            </li>
           </ul>
         </li>
+        <!-- FINE Impostazioni / Esci:  -->
       </ul>
     </div>
   </div>
@@ -80,4 +122,16 @@
     </div>
   </div>
 </div>
+<!-- FAB "Aggiungi bolletta": SOLO MOBILE -->
+<button
+  type="button"
+  class="fab-add-bill d-md-none"
+  *ngIf="!isAdminRoute && !isLoginRoute && !isStatisticsRoute && currentPropertyId"
+  (click)="openAddBillModal()"
+  [attr.aria-label]="'Aggiungi ' + (billSingularLabel | lowercase)"
+  [title]="'Aggiungi ' + (billSingularLabel | lowercase)"
+>
+  +
+</button>
+
 <router-outlet></router-outlet>

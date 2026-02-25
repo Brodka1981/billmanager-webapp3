@@ -7,7 +7,7 @@ import { BillService, Property } from '../../services/bill.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { FormsModule } from '@angular/forms';
 import { ASSET_TYPE_LABELS, ASSET_TYPE_OPTIONS, AssetType } from '../../shared/asset-types';
-import { Car, House, LucideAngularModule } from 'lucide-angular';
+import { Car, House, LucideAngularModule, ChevronRight } from 'lucide-angular';
 import { LucideIconData } from 'lucide-angular/icons/types';
 
 @Component({
@@ -32,6 +32,7 @@ export class AdminComponent {
     assetType: 'RealEstate'
   };
   isEditMode: boolean = false;
+  ChevronRight = ChevronRight;
   propertyModalError: string | null = null;
   assetTypeOptions: AssetType[] = ASSET_TYPE_OPTIONS;
   assetTypeLabels = ASSET_TYPE_LABELS;
@@ -235,5 +236,9 @@ export class AdminComponent {
       },
       error: (error) => this.errorHandler.handleHttpError(error)
     });
+  }
+
+  goToProperty(propertyId: any): void {
+    this.router.navigate(['/properties', propertyId]);
   }
 }

@@ -1,15 +1,19 @@
 <div class="container my-4" *ngIf="propertyId">
-  <a [routerLink]="['/properties', property?.id]" class="me-3 btn btn-link">
-      ← tutte le {{ billPluralLabel | lowercase }}
-  </a>
+  <a
+  [routerLink]="['/properties', property?.id]"
+  class="me-3 btn btn-link mobile-back"
+  [attr.aria-label]="'Torna a tutte le ' + (billPluralLabel | lowercase)"
+>
+  <i-lucide [img]="ArrowLeft" class="mobile-back__icon"></i-lucide>
+  <span>Tutte le {{ billPluralLabel }}</span>
+</a>
   <div class="header">
     <div>
-      <h2>Statistiche Spese Annuali</h2>
-      <p class="subtitle" *ngIf="property">{{ property.name }} &mdash; {{ property.address }}</p>
+      <h2>Statistiche Annuali</h2>
+      <p class="subtitle" *ngIf="property">{{ property.name }}</p>
       <p class="subtitle" *ngIf="!property">Proprietà #{{ propertyId }}</p>
     </div>
     <div class="filters">
-      <label for="yearSelect" class="form-label">Anno</label>
       <select id="yearSelect" class="form-select" [(ngModel)]="selectedYear" (change)="onYearChange()">
         <option *ngFor="let year of availableYears" [ngValue]="year">{{ year }}</option>
       </select>
@@ -44,7 +48,7 @@
         <ng-container [ngSwitch]="chartView">
           <div class="chart-columns" *ngSwitchCase="'grouped'">
             <div class="chart-column" *ngFor="let month of monthlyStatistics; let index = index">
-              <div class="month-total">{{ getMonthTotal(month) }} €</div>
+              <div class="month-total">{{ getMonthTotal(month) }}</div>
               <div class="bars">
                 <ng-container *ngFor="let type of billTypesForYear">
                   <div
@@ -62,7 +66,7 @@
           </div>
           <div class="chart-columns stacked" *ngSwitchCase="'stacked'">
             <div class="chart-column" *ngFor="let month of monthlyStatistics; let index = index">
-              <div class="month-total">{{ getMonthTotal(month) }} €</div>
+              <div class="month-total">{{ getMonthTotal(month) }}</div>
               <div class="stacked-bars">
                 <ng-container *ngFor="let type of billTypesForYear">
                   <div

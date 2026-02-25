@@ -59,6 +59,35 @@
   background: transparent;
 }
 
+.fab-add-bill {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  background: #0d6efd;
+  color: #fff;
+  border: none;
+  font-size: 38px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  z-index: 1060; /* sopra contenuti */
+}
+
+.fab-add-bill:active {
+  transform: translateY(1px);
+}
+
+
+/* opzionale: se la modale globale è aperta, nascondi il FAB */
+.global-add-modal ~ .fab-add-bill {
+  display: none !important;
+}
+
 
 
 

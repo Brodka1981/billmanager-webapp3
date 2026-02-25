@@ -11,6 +11,7 @@ import { BILL_TYPE_LABELS, DEFAULT_BILL_TYPES_BY_ASSET } from './shared/bill-typ
 import { AdminService } from './services/admin.service';
 import { ErrorHandlerService } from './shared/error-handler.service';
 import { AssetType } from './shared/asset-types';
+import { Collapse } from 'bootstrap';
 
 @Component({
   standalone: true,
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit {
   billTypes: string[] = [];
   currentProperty?: Property;
   currentPropertyAssetType: AssetType = 'RealEstate';
+  isStatisticsRoute = false;
 
 
   constructor(private router: Router, private route: ActivatedRoute, private authService: AuthService,
@@ -52,6 +54,7 @@ export class AppComponent implements OnInit {
         this.isAdminRoute = this.router.url.includes('admin') || this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('settings') || this.router.url.includes('password');
         this.isLoginRoute = this.router.url.includes('login') || this.router.url.includes('register') || this.router.url.includes('password');
         this.currentUrl = this.router.url; // Memorizza l'URL attuale
+        this.isStatisticsRoute = this.router.url.includes('/statistics');
       });
   }
 
@@ -97,6 +100,25 @@ export class AppComponent implements OnInit {
     this.showAddBillModal = false;
     this.newBill = null;
     this.billTypes = [];
+  }
+
+  toggleNavbar(): void {
+    const el = document.getElementById('navbarNav');
+    if (!el) return;
+
+    const inst = Collapse.getInstance(el) || new Collapse(el, { toggle: false });
+    // toggle() non c'è in tutte le definizioni TS, quindi faccio show/hide in base allo stato
+    if (el.classList.contains('show')) inst.hide();
+    else inst.show();
+  }
+
+  closeNavbar(): void {
+    const navbar = document.getElementById('navbarNav');
+    if (navbar) {
+      const bsCollapse = Collapse.getInstance(navbar)
+        || new Collapse(navbar, { toggle: false });
+      bsCollapse.hide();
+    }
   }
 
   saveNewBill(): void {

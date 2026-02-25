@@ -1,4 +1,4 @@
-package gestionebollette.duckdns.org;
+package org.duckdns.gestionebollette;
 
 import com.getcapacitor.BridgeActivity;
 

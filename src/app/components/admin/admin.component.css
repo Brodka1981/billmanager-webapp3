@@ -40,3 +40,146 @@
   background-color: #f8d7da;
   border-radius: 0.25rem;
 }
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.admin-add-btn {
+  white-space: nowrap;
+  padding: 0.65rem 1rem;
+  font-weight: 600;
+}
+
+.properties-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.property-card {
+  background-color: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 0.25rem 0.75rem rgba(33, 37, 41, 0.08);
+}
+
+.expired-card {
+  border-left: 4px solid #dc3545;
+}
+
+.property-card__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.property-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.property-card__name {
+  font-weight: 700;
+  color: #212529;
+  text-decoration: none;
+}
+
+.property-card__name:hover,
+.property-card__name:focus-visible {
+  text-decoration: underline;
+}
+
+.property-card__address {
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.property-card__badge {
+  align-self: flex-start;
+  font-weight: 600;
+}
+
+.property-card__meta {
+  margin: 0.75rem 0 0.25rem;
+}
+
+.property-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.property-card__action-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.property-card__action-btn {
+  padding: 0.75rem 0.5rem;
+  font-weight: 600;
+  border-radius: 0.65rem;
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-add-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+.property-card--clickable {
+  cursor: pointer;
+}
+
+.property-card--clickable:active {
+  transform: translateY(1px);
+}
+
+.property-card--clickable:focus-visible {
+  outline: 3px solid rgba(13, 110, 253, 0.35);
+  outline-offset: 2px;
+}
+
+
+.property-card__right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.property-card__chevron {
+  width: 20px;
+  height: 20px;
+  color: #adb5bd; /* grigio soft */
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+/* micro feedback */
+.property-card--clickable:hover .property-card__chevron,
+.property-card--clickable:active .property-card__chevron {
+  transform: translateX(3px);
+  color: #495057;
+}
+
+.property-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 60px; /* o 64px */
+}
+

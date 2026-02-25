@@ -10,7 +10,7 @@
     </div>
 
     <!-- Dropdown per Stato -->
-    <div class="col-md-2">
+    <div class="col-md-2 d-none d-md-block">
       <label for="status" class="form-label">Stato pagamento</label>
       <select id="status" class="form-select" [(ngModel)]="filters.status" name="status" (ngModelChange)="onStatusChange()">
         <option value="" selected>Tutti</option>
@@ -28,7 +28,7 @@
     </div>
 
     <!-- Data di Inizio -->
-    <div class="col-md-3">
+    <div class="col-md-3 d-none d-md-block">
       <label for="startDate" class="form-label">Data Scadenza da</label>
       <input
         type="date"
@@ -41,7 +41,7 @@
     </div>
 
     <!-- Data di Fine -->
-    <div class="col-md-3">
+    <div class="col-md-3 d-none d-md-block">
       <label for="endDate" class="form-label">Data Scadenza al</label>
       <input
         type="date"
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Pulsante Cerca e Reset -->
-    <div class="col-12 d-flex gap-2">
+    <div class="col-12 d-none d-md-flex gap-2">
       <button type="submit" class="btn btn-primary">Cerca</button>
       <button type="button" class="btn btn-outline-secondary" (click)="onReset()">Reset filtri</button>
     </div>

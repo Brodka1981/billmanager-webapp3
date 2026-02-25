@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
 import { BILL_TYPE_LABELS, DEFAULT_BILL_TYPES_BY_ASSET } from '../../shared/bill-type-labels';
 import { AssetType } from '../../shared/asset-types';
-
+import { LucideAngularModule, LUCIDE_ICONS, ArrowLeft } from 'lucide-angular';
 type ChartView = 'grouped' | 'stacked';
 
 interface MonthlyStatistics {
@@ -21,7 +21,7 @@ interface MonthlyStatistics {
 @Component({
   selector: 'app-annual-statistics',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LucideAngularModule],
   templateUrl: './annual-statistics.component.html',
   styleUrl: './annual-statistics.component.css'
 })
@@ -29,7 +29,7 @@ export class AnnualStatisticsComponent implements OnInit, OnDestroy {
   propertyId!: number;
   property?: Property;
   propertyAssetType: AssetType = 'RealEstate';
-
+  ArrowLeft = ArrowLeft;
   readonly billTypeLabels: Record<string, string> = BILL_TYPE_LABELS;
 
   availableYears: number[] = [];

@@ -5,7 +5,9 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
 import { PushNotificationService } from '../../services/push-notification.service';
+import { Capacitor } from '@capacitor/core';
 import { finalize } from 'rxjs';
+import { PushNativeService } from '../../services/push-native.service';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +26,7 @@ export class LoginComponent {
     private authService: AuthService,
     private adminService: AdminService,
     private pushService: PushNotificationService,
+    private pushNativeService: PushNativeService,
     private router: Router,
     private route: ActivatedRoute
   ) {
@@ -61,6 +64,20 @@ export class LoginComponent {
       this.adminService.login(loginData).subscribe({
         next: async response => {
           this.authService.login(response.token); // Memorizza il token
+
+
+
+          try {
+            if (Capacitor.isNativePlatform()) {
+              await this.pushNativeService.registerAndroidPush(response.token);
+            } else {
+              await this.pushService.registerDeviceToken(response.token);
+            }
+          } catch (err) {
+            console.warn('Registrazione notifiche fallita', err);
+          } finally {
+            this.isLoading = false;
+          }
 
           try {
             await this.pushService.registerDeviceToken(response.token);

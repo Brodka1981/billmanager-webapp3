@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { SearchComponent } from "../search/search.component";
 import { Observable, Subscription } from 'rxjs';
-import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House, Car, ShieldCheck, ClipboardCheck, Wrench } from 'lucide-angular';
+import { LucideAngularModule, Lightbulb, Flame, Droplet, Tractor, Recycle, House, Car, ShieldCheck, ClipboardCheck, Wrench, ArrowLeft } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
 import { AdminService } from '../../services/admin.service';
 import { ErrorHandlerService } from '../../shared/error-handler.service';
@@ -48,6 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   readonly ShieldCheck = ShieldCheck;
   readonly ClipboardCheck = ClipboardCheck;
   readonly Wrench = Wrench;
+  readonly ArrowLeft = ArrowLeft;
 
   property: Property | undefined;
   bills: Bill[] = [];

@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'gestionebollette.duckdns.org',
+  appId: 'org.duckdns.gestionebollette',
   appName: 'gestionebollette',
   webDir: 'dist/bill-manager-frontend/browser'
 };

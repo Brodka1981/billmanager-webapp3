@@ -1,9 +1,32 @@
 <app-search *ngIf="isSearchVisible" (search)="handleSearch($event)" [billTypes]="billTypes" [billTypeLabels]="billTypeLabels"></app-search>
 
 <div class="container my-4">
-  <div class="d-flex align-items-center mb-4">
-    <a *ngIf="titleSuffix" [routerLink]="['/properties', property?.id]" class="me-3 btn btn-link">
-      ← tutte le {{ billPluralLabel | lowercase }}
+    <!-- HEADER MOBILE (app-like) -->
+  <div class="mobile-header d-md-none">
+    <a *ngIf="titleSuffix"
+      [routerLink]="['/properties', property?.id]"
+      class="mobile-back"
+      aria-label="Torna a tutte le bollette"
+    >
+      <i-lucide [img]="ArrowLeft" class="mobile-back__icon"></i-lucide>
+      <span>Tutte le {{ billPluralLabel }}</span>
+    </a>
+
+    <div class="mobile-title">{{ property?.name }}</div>
+
+    <div class="mobile-subtitle">
+      {{ billPluralLabel }} {{ titleSuffix ? titleSuffix : '' }}<span *ngIf="selectedYear"> · {{ selectedYear }}</span>
+    </div>
+  </div>
+  <!-- HEADER DESKTOP (come ora) -->
+  <div class="d-none d-md-flex align-items-center mb-4">
+    <a
+      *ngIf="titleSuffix"
+      [routerLink]="['/properties', property?.id]"
+      class="btn btn-link back-button d-inline-flex align-items-center gap-2"
+    >
+      <i-lucide [img]="ArrowLeft" class="back-icon"></i-lucide>
+      Tutte
     </a>
     <h1 class="text-center flex-grow-1 mb-0">
       {{ billPluralLabel }} {{ titleSuffix ? titleSuffix : '' }} <span>di {{ property?.name }}</span><span *ngIf="selectedYear"> {{ selectedYear }}</span>
@@ -231,3 +254,4 @@
     </div>
   </div>
 </div>
+

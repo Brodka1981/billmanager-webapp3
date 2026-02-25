@@ -17,6 +17,7 @@ export class AdminService {
   }
 
   login(loginData: { email: string; password: string }) {
+    console.log(this.apiAdmin + '/login');
     return this.http.post<{ token: string }>(this.apiAdmin + '/login', loginData);
   }
 
