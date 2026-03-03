@@ -10,6 +10,9 @@ export class PushNativeService {
 
   private apiAdmin = environment.apiAdmin;
 
+  // scegli un id canale tuo
+  private readonly ANDROID_CHANNEL_ID = 'overdue_bills_high';
+
   constructor(private http: HttpClient) {}
 
   async registerAndroidPush(tok: string) {
@@ -24,6 +27,19 @@ export class PushNativeService {
     if (permStatus.receive !== 'granted') {
       console.warn('Permessi notifiche negati');
       return;
+    }
+
+    await LocalNotifications.requestPermissions();
+    // ANDROID: crea canale HIGH (heads-up)
+    if (info.platform === 'android') {
+      await LocalNotifications.createChannel({
+        id: this.ANDROID_CHANNEL_ID,
+        name: 'Avvisi bollette',
+        description: 'Notifiche per bollette scadute',
+        importance: 5, // 5 = HIGH
+        visibility: 1 // 1 = PUBLIC
+        //sound: 'default'
+      });
     }
 
     // 2️⃣ Registra il device
@@ -51,42 +67,6 @@ export class PushNativeService {
     PushNotifications.addListener('registrationError', err => {
       console.error('Errore registrazione push native', err);
     });
-
-    // opzionale: push ricevuta
-    /*PushNotifications.addListener('pushNotificationReceived', notification => {
-      console.log('Push ricevuta (foreground)', notification);
-    });*/
-    PushNotifications.addListener('pushNotificationReceived', async notification => {
-      console.log('🔥 PUSH FOREGROUND', notification);
-
-      // Android NON mostra automaticamente la notifica in foreground
-      await LocalNotifications.schedule({
-        notifications: [
-          {
-            id: Date.now(),
-            title: notification.title ?? 'Notifica',
-            body: notification.body ?? ''
-          }
-        ]
-      });
-    });
-    /*
-    PushNotifications.addListener('pushNotificationReceived',async notification => {
-
-        console.log('Push ricevuta (foreground)', notification);
-
-        await LocalNotifications.schedule({
-          notifications: [
-            {
-              id: Date.now(),
-              title: notification.data?.title ?? notification.title ?? 'Notifica',
-              body: notification.data?.body ?? notification.body ?? '',
-              schedule: { at: new Date(Date.now() + 100) }
-            }
-          ]
-        });
-      }
-    );*/
 
     PushNotifications.addListener('pushNotificationActionPerformed', action => {
       console.log('Click su notifica', action);
